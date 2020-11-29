@@ -22,7 +22,7 @@ int getpid(void);
 char* sbrk(int);
 int sleep(int);
 int uptime(void);
-int imgdraw(char*);
+int imgdraw(unsigned char*);
 
 // ulib.c
 int stat(char*, struct stat*);
