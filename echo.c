@@ -32,7 +32,6 @@ main(int argc, char *argv[])
   
   //kbd(keycode);
 
-  imgdraw(img
-
+  imgdraw(img);
   exit();
 }

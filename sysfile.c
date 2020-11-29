@@ -430,14 +430,14 @@ int sys_imgdraw(char*){
   if(argptr(0, (void*)&img, 320*200*3) < 0)
     return -1;
   char palette[256][256][256];
-  memset(palette, 256, sizeof(palette));
+  memset(palette, 255, sizeof(palette));
   unsigned char palette_code = 0x00;
   for(int i = 0; i < 200; i++){
     for(int j = 0; j < 320; j++){
       char r = img[i*320*3 + j*3];
       char g = img[i*320*3 + j*3 + 1];
       char b = img[i*320*3 + j*3 + 2];
-      if(palette[r][g][b] == 256){
+      if(palette[r][g][b] == 255){
         outb(0x3c8, palette_code);
         outb(0x3c9, r);
         outb(0x3c9, g);
