@@ -432,19 +432,14 @@ int sys_imgdraw(void){
   unsigned char* img;
   if(argptr(0, (void*)&img, 320*200*3) < 0)
     return -1;
-  // cprintf("%x", img);
   int palette[256] = {0};
-  // memset(palette, 255, sizeof(palette));
-  // cprintf("2_img[0]: %x", &img[0]);
   unsigned char palette_code = 0x00;
-  for(int j = 0; j < 320; j++){
-    // cprintf("code: %d\n", palette_code);
-    // cprintf("b: %d\n", img[i*320*3 + 5]);
-    for(int i = 0; i < 200; i++){
-      unsigned char r = img[i*320*3 + j*3];
-      unsigned char g = img[i*320*3 + j*3 + 1];
-      unsigned char b = img[i*320*3 + j*3 + 2];
-      // cprintf("r: %d g: %d b: %d", r, g, b);
+  int i, j;
+  for(j = 0; j < 320; j++){
+    for(i = 0; i < 200; i++){
+      unsigned char r = img[i*320*3 + j*3] >> 2;
+      unsigned char g = img[i*320*3 + j*3 + 1] >> 2;
+      unsigned char b = img[i*320*3 + j*3 + 2] >> 2;
       int k = 0;
       for(k = 0; k < palette_code; k++){
         if(palette[k] == (int)r * 256 * 256 + (int)g * 256 + (int)b){
@@ -452,16 +447,12 @@ int sys_imgdraw(void){
         }
       }
       if(k >= palette_code){
-        // cprintf("code: %d\n", palette_code);
         outb(0x3c8, palette_code);
         outb(0x3c9, r);
         outb(0x3c9, g);
         outb(0x3c9, b);
-        cprintf("b: %d\n", img[i*320*3 + 5]);
         *(unsigned char *)P2V(0xa0000 + i * 320 + j) = palette_code;
         palette[palette_code] = (int)r * 256 * 256 + (int)g * 256 + (int)b;
-        // cprintf("palette: %x\n", palette[palette_code]);
-        // cprintf("code: %d\n", palette_code);
         palette_code++;
       }
       else{
