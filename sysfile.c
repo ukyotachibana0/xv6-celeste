@@ -423,3 +423,33 @@ sys_pipe(void)
   fd[1] = fd1;
   return 0;
 }
+
+
+int sys_imgdraw(char*){
+  char* img;
+  if(argptr(0, (void*)&img, 320*200*3) < 0)
+    return -1;
+  char palette[256][256][256];
+  memset(palette, 256, sizeof(palette));
+  unsigned char palette_code = 0x00;
+  for(int i = 0; i < 200; i++){
+    for(int j = 0; j < 320; j++){
+      char r = img[i*320*3 + j*3];
+      char g = img[i*320*3 + j*3 + 1];
+      char b = img[i*320*3 + j*3 + 2];
+      if(palette[r][g][b] == 256){
+        outb(0x3c8, palette_code);
+        outb(0x3c9, r);
+        outb(0x3c9, g);
+        outb(0x3c9, b);
+        palette[r][g][b] = palette_code;
+        palette_code++;
+    }
+  }
+  for(int x = 0; x < 320; x++){
+    for(int y = 0; y < 200; y++){
+      *(unsigned char *)P2V(0xa0000 + y * 320 + x) =
+    palette[img[y*320*3 + x*3]][img[y*320*3 + x*3 + 1]][img[y*320*3 + x*3 + 2]]
+    }
+  }
+}
