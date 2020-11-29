@@ -13,6 +13,8 @@
 #include "fs.h"
 #include "file.h"
 #include "fcntl.h"
+#include "x86.h"
+#include "memlayout.h"
 
 // Fetch the nth word-sized system call argument as a file descriptor
 // and return both the descriptor and the corresponding struct file.
@@ -425,18 +427,18 @@ sys_pipe(void)
 }
 
 
-int sys_imgdraw(char*){
-  char* img;
+int sys_imgdraw(void){
+  unsigned char* img;
   if(argptr(0, (void*)&img, 320*200*3) < 0)
     return -1;
-  char palette[256][256][256];
+  unsigned char palette[256][256][256];
   memset(palette, 255, sizeof(palette));
   unsigned char palette_code = 0x00;
   for(int i = 0; i < 200; i++){
     for(int j = 0; j < 320; j++){
-      char r = img[i*320*3 + j*3];
-      char g = img[i*320*3 + j*3 + 1];
-      char b = img[i*320*3 + j*3 + 2];
+      unsigned char r = img[i*320*3 + j*3];
+      unsigned char g = img[i*320*3 + j*3 + 1];
+      unsigned char b = img[i*320*3 + j*3 + 2];
       if(palette[r][g][b] == 255){
         outb(0x3c8, palette_code);
         outb(0x3c9, r);
@@ -444,12 +446,14 @@ int sys_imgdraw(char*){
         outb(0x3c9, b);
         palette[r][g][b] = palette_code;
         palette_code++;
+      }
     }
   }
   for(int x = 0; x < 320; x++){
     for(int y = 0; y < 200; y++){
       *(unsigned char *)P2V(0xa0000 + y * 320 + x) =
-    palette[img[y*320*3 + x*3]][img[y*320*3 + x*3 + 1]][img[y*320*3 + x*3 + 2]]
+    palette[img[y*320*3 + x*3]][img[y*320*3 + x*3 + 1]][img[y*320*3 + x*3 + 2]];
     }
   }
+  return 1;
 }
