@@ -15,7 +15,7 @@
 int
 main(int argc, char *argv[])
 {
-  int keycode = 0x01;  // escape key pressed
+  //int keycode = 0x01;  // escape key pressed
 
   const int SCREEN_WIDTH = 320;
   const int SCREEN_HEIGHT = 200;
