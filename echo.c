@@ -30,9 +30,9 @@ main(int argc, char *argv[])
     }
   }
   
-  kbd(keycode);
+  //kbd(keycode);
 
-  imgdraw(img);
+  imgdraw(img
 
   exit();
 }
