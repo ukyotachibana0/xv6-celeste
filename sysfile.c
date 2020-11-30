@@ -467,6 +467,8 @@ int sys_imgdraw(void){
   return 1;
 }
 
+int kb_mode[256] = { 0 };
+
 int
 sys_kbd(void)
 {
