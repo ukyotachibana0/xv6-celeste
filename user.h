@@ -23,6 +23,7 @@ char* sbrk(int);
 int sleep(int);
 int uptime(void);
 int imgdraw(unsigned char*);
+int kbd(int);
 
 // ulib.c
 int stat(char*, struct stat*);
