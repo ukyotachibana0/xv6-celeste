@@ -28,25 +28,33 @@ main(int argc, char *argv[])
   //kbd(keycode);
 
   int T = 0;
+  int i = 0;
   while (1) {
-    int x, y;
-    for (y = 0; y < 200; y++)
-      for (x = 0; x < 200; x++) {
-        int y1 = y;
-        int x1 = x + (SCREEN_WIDTH - 200) / 2;
-        int index = image[y * 200 + x];
-        if (index == 7) index = T % 14;
-        img[(y1 * SCREEN_WIDTH + x1) * 3 + 0] = palette[index][0];
-        img[(y1 * SCREEN_WIDTH + x1) * 3 + 1] = palette[index][1];
-        img[(y1 * SCREEN_WIDTH + x1) * 3 + 2] = palette[index][2];
-      }
-    imgdraw(img);
     T++;
-    if (T % 30 == 0) printf(1, "frame: %d\n", T);
+    // if (T % 30 == 0) printf(1, "frame: %d\n", T);
     // TODO: Replace with vertical retrace
-    sleep(10);
+    printf(1, "%d\n", vretrace());
+    if(vretrace()){
+        i++;
+    }
+    if(i >= 350){
+      // printf(1, "5s: %d\n", i);
+      int x, y;
+      for (y = 0; y < 200; y++)
+        for (x = 0; x < 200; x++) {
+          int y1 = y;
+          int x1 = x + (SCREEN_WIDTH - 200) / 2;
+          int index = image[y * 200 + x];
+          if (index == 7) index = T % 14;
+          img[(y1 * SCREEN_WIDTH + x1) * 3 + 0] = palette[index][0];
+          img[(y1 * SCREEN_WIDTH + x1) * 3 + 1] = palette[index][1];
+          img[(y1 * SCREEN_WIDTH + x1) * 3 + 2] = palette[index][2];
+        }
+      imgdraw(img);
+      i = 0;
+    }
+    // sleep(10);
   }
   free(img);
-
   exit();
 }

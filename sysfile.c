@@ -485,3 +485,12 @@ int sys_imgdraw(void){
   // }
   return 1;
 }
+
+int sys_vretrace(void){
+  unsigned char is_vRetrace = inb(0x3ba);
+  // if(is_vRetrace & 0x08){
+  //   return 1;
+  // }
+  // else return 0;
+  return is_vRetrace;
+}
