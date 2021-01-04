@@ -1,0 +1,113 @@
+需要的工作（标 * 为完成）：
+
+1. 键盘
+  - [ ] 系统调用 kbd (23)
+2. 显示
+  - [*] 绘图 imgdraw (22)
+  - [ ] 显示器垂直同步 vretrace (25)
+3. 声音
+  - [ ] 发送声音数据 sound (24)
+  - [ ] 检查声音缓冲 sndbuf (26)
+
+最终项目不使用鼠标，所以不再安排工作
+完成上述工作后即可开始移植游戏
+
+---
+0. 当前情况
+
+在项目目录下执行 make qemu 即可运行。
+
+因为一开机就进入了图形显示模式，所以是黑屏，看不见 xv6 控制台里的内容，
+但输入是有反应的。可以暂时从运行 QEMU 的终端观察。
+
+echo 程序显示一张图片，主角的头发会变色。
+
+---
+1. 键盘（zsw, yty）
+
+** 理清当前控制台键盘输入的过程，然后修改之并实现 kbd **
+
+当前控制台的逻辑：
+  - (trap.c) 接收到键盘的中断，调用 kbdintr()
+  - (kbd.c) 调用 consoleintr()，传入 kbdgetc 作为「获取字符的函数」
+  - (console.c) 反复调用 getc（其实就是 kbdgetc）并处理输入的字符
+  - (kbd.c) 过程中，kbdgetc() 会从端口取得按下/松开的按键码
+
+这一流程并不适合实现 kbd 系统调用的功能（询问某个按键是否按下），
+所以需要修改 kbd.c 和 console.c 这些部分的架构，保留原有的功能，
+然后再加入 kbd 系统调用的实现。
+
+一个参考思路：
+  - 在 kbdintr() 中直接获得所有字符，然后把字符直接传给 consoleintr()，
+    而不再让 consoleintr() 自行调用 getc()
+      - 这一步中需要进行的端口操作可以看 kbdgetc() 的实现，加上合理猜测
+        即可推断出各步骤的含义（x）。有疑问可以参考后面附上的 OSDev Wiki
+        页面或者提出讨论
+      - 可以将 consoleintr() 改为接收一个字符作为参数，对每个输入的字符
+        调用一次
+  - 同时，kbdintr() 维护一个布尔数组「每个按键是否按下」
+  - kbd 系统调用只需查这个数组即可
+
+如何实现系统调用：
+  - 需要修改 syscall.h/c 以及 usys.S
+  - 可以参考已有 imgdraw 的工作（目录下全局搜索 imgdraw）
+  - sys_kbd() 的实现可以放在任何地方（比如就在 kbd.c）
+
+OSDev Wiki 对键盘相关端口的说明：
+  https://wiki.osdev.org/%228042%22_PS/2_Controller#PS.2F2_Controller_IO_Ports
+
+涉及文件：
+  syscall.h  syscall.c  usys.S
+  trap.c  kbd.c  console.c
+
+---
+2. 显示（yxr）
+
+** 增加一个系统调用 vretrace 用于垂直同步 **
+
+需要提供一个系统调用，以判别当前是否处于垂直回扫（vertical retrace）期。
+这样一来，用户程序等待此值的「上升沿」（从 0 变为 1），再调用一次 imgdraw 绘制，
+就可以实现与显示器刷新频率相等的帧率，也可以避免画面撕裂（screen tearing）问题。
+
+实现：
+  - 显示由 VGA 控制器负责，从端口 0x3da 可以获得其状态
+  - 参考 VGA 控制器文档（看最后一项）：
+    http://www.osdever.net/FreeVGA/vga/extreg.htm
+  - 检查返回值中代表垂直回扫的一位即可
+  - 参考网友实现的循环：
+    https://www.gamedev.net/forums/topic/283658-x86-detect-vga-vertical-retrace/
+
+测试：
+  echo 程序目前在两帧之间会 sleep 一小段时间，将其改成循环反复调用 vretrace，
+  等待「上升沿」即可。
+  echo 还会在控制台每隔 30 帧输出一行调试信息，观察输出间隔可判断是否实现正确。
+  显示器刷新频率是 70 Hz。
+
+涉及文件：
+  syscall.h  syscall.c  usys.S
+  sysfile.c（不考虑一下把两个图形的调用放到新的文件里嘛）
+  echo.c
+
+---
+3. 声音（lsq）
+
+** 实现声音输出 **
+
+需要阅读 SoundBlaster 16 声卡的手册
+执行 16-bit mono PCM auto-initialize 44.1kHz 声音输出
+
+涉及文件：
+  syscall.h  syscall.c
+  traps.h  trap.c
+
+注：
+  - QEMU 模拟的 SB16 DSP 单元版本是 4.05
+  - 默认使用 IRQ 5，IO 地址 0x220，DMA 1 (8-bit) / 5 (16-bit)
+  - https://github.com/qemu/qemu/blob/41192db338588051f21501abc13743e62b0a5605/hw/audio/sb16.c#L1419
+
+手册：
+  https://pdos.csail.mit.edu/6.828/2018/readings/hardware/SoundBlaster.pdf
+  https://pdos.csail.mit.edu/6.828/2018/reference.html
+
+OSDev Wiki：
+  https://wiki.osdev.org/Sound_Blaster_16
