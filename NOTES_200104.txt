@@ -4,7 +4,8 @@
   - [ ] 系统调用 kbd (23)
 2. 显示
   - [*] 绘图 imgdraw (22)
-  - [ ] 显示器垂直同步 vretrace (25)
+  - [x] 显示器垂直同步 vretrace (25)
+  - [ ] 校准时钟
 3. 声音
   - [ ] 发送声音数据 sound (24)
   - [ ] 检查声音缓冲 sndbuf (26)
@@ -61,7 +62,20 @@ OSDev Wiki 对键盘相关端口的说明：
   trap.c  kbd.c  console.c
 
 ---
-2. 显示（yxr）
+2. 显示/时钟（yxr）
+
+校准 PIT，实现 tick 与实际毫秒数的准确映射，然后尝试提升精度（增加中断频率）
+
+- 设置 PIT 参数的部分在 lapic.c:67
+- PIT 的中断编号是 IRQ 0，在 trap.c:50 处理
+
+必要时考虑使用 RTC
+
+OSDev Wiki：
+  https://wiki.osdev.org/Programmable_Interval_Timer
+  https://wiki.osdev.org/RTC
+
+/****
 
 ** 增加一个系统调用 vretrace 用于垂直同步 **
 
@@ -87,6 +101,8 @@ OSDev Wiki 对键盘相关端口的说明：
   syscall.h  syscall.c  usys.S
   sysfile.c（不考虑一下把两个图形的调用放到新的文件里嘛）
   echo.c
+
+****/
 
 ---
 3. 声音（lsq）
