@@ -74,6 +74,7 @@ OSDev Wiki 对键盘相关端口的说明：
 OSDev Wiki：
   https://wiki.osdev.org/Programmable_Interval_Timer
   https://wiki.osdev.org/RTC
+  https://wiki.osdev.org/APIC_timer
 
 /****
 
