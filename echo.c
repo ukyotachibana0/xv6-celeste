@@ -29,15 +29,25 @@ main(int argc, char *argv[])
 
   int T = 0;
   int i = 0;
+  int tmp = 0;
+  // int flag = 0;
   while (1) {
-    T++;
+      T++;
     // if (T % 30 == 0) printf(1, "frame: %d\n", T);
     // TODO: Replace with vertical retrace
-    printf(1, "%d\n", vretrace());
-    if(vretrace()){
-        i++;
+    // printf(1, "1: %d\n", vretrace());
+    // printf(1, "2: %d\n", vretrace());
+    // int i = vretrace();
+    int j = vretrace();
+    if(j > tmp){
+      // printf(1, "%d\n", T);
+      i++;
     }
-    if(i >= 350){
+    tmp = j;
+    if(i >= 20){
+      i = 0;
+      printf(1, "%d\n", vretrace());
+    }
       // printf(1, "5s: %d\n", i);
       int x, y;
       for (y = 0; y < 200; y++)
@@ -51,9 +61,7 @@ main(int argc, char *argv[])
           img[(y1 * SCREEN_WIDTH + x1) * 3 + 2] = palette[index][2];
         }
       imgdraw(img);
-      i = 0;
-    }
-    // sleep(10);
+      sleep(20);
   }
   free(img);
   exit();

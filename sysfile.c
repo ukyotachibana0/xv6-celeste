@@ -487,10 +487,12 @@ int sys_imgdraw(void){
 }
 
 int sys_vretrace(void){
-  unsigned char is_vRetrace = inb(0x3ba);
+  outb(0x43, 0x0b);
+  unsigned char low = inb(0x40);
+  unsigned char high = inb(0x40);
   // if(is_vRetrace & 0x08){
   //   return 1;
   // }
   // else return 0;
-  return is_vRetrace;
+  return ( (unsigned int)high << 8 ) + low;
 }
