@@ -13,7 +13,9 @@
 #define BTN_X  (1u << 5)
 
 void game_init();
+// 30 fps
 void game_update(unsigned buttons);
+// 返回 128*128 的 RGBA 数组首指针
 void *game_draw();
 void game_audio(unsigned samples, int16_t *pcm);
 
