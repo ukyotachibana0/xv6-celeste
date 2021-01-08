@@ -25,6 +25,7 @@ int sleep(int);
 int uptime(void);
 int imgdraw(unsigned char*);
 int vretrace(void);
+int kbd(int);
 
 // ulib.c
 int stat(const char*, struct stat*);

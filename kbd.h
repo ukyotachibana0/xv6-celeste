@@ -110,3 +110,5 @@ static uchar ctlmap[256] =
   [0xD2] KEY_INS,   [0xD3] KEY_DEL
 };
 
+extern int kb_mode[256];
+
