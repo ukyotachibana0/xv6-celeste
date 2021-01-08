@@ -110,4 +110,19 @@ static uchar ctlmap[256] =
   [0xD2] KEY_INS,   [0xD3] KEY_DEL
 };
 
+static uchar mode_map[256] =
+{
+  NO,   NO, '1',  '2',  '3',  '4',  '5',  '6',  // 0x00
+  '7',  '8',  '9',  '0',   NO,   NO,   NO,   NO,
+  'q',  'w',  'e',  'r',  't',  'y',  'u',  'i',  // 0x10
+  'o',  'p',  '[',  ']',   NO,   NO,  'a',  's',
+  'd',  'f',  'g',  'h',  'j',  'k',  'l',  ';',  // 0x20
+  '\'', '`',  NO,   '\\', 'z',  'x',  'c',  'v',
+  'b',  'n',  'm',  ',',  '.',  '/',  NO,   '*',  // 0x30
+  NO,   ' ',  NO,   NO,   NO,   NO,   NO,   NO,
+  NO,   NO,   NO,   NO,   NO,   NO,   NO,   '7',  // 0x40
+  '8',  '9',  '-',  '4',  '5',  '6',  '+',  '1',
+  '2',  '3',  '0',  '.',  NO,   NO,   NO,   NO,   // 0x50
+};
+
 extern int kb_mode[256];
