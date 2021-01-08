@@ -17,6 +17,12 @@ kbdgetc(void)
     return -1;
   data = inb(KBDATAP);
 
+  uartputc('[');
+  uartputc("0123456789abcdef"[data / 16]);
+  uartputc("0123456789abcdef"[data % 16]);
+  uartputc(']');
+  uartputc('\n');
+
   if(data == 0xE0){
     shift |= E0ESC;
     return 0;
