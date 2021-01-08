@@ -17,6 +17,7 @@ kbdgetc(void)
     return -1;
   data = inb(KBDATAP);
 
+  uartputc('o');
   uartputc('[');
   uartputc("0123456789abcdef"[data / 16]);
   uartputc("0123456789abcdef"[data % 16]);
@@ -30,12 +31,34 @@ kbdgetc(void)
     // Key released
     data = (shift & E0ESC ? data : data & 0x7F);
     shift &= ~(shiftcode[data] | E0ESC);
+
+    uartputc('r');
+    uartputc('[');
+    uartputc("0123456789abcdef"[data / 16]);
+    uartputc("0123456789abcdef"[data % 16]);
+    uartputc(']');
+    uartputc('\n');
+
     return 0;
   } else if(shift & E0ESC){
     // Last character was an E0 escape; or with 0x80
     data |= 0x80;
     shift &= ~E0ESC;
+
+    uartputc('p');
+    uartputc('[');
+    uartputc("0123456789abcdef"[data / 16]);
+    uartputc("0123456789abcdef"[data % 16]);
+    uartputc(']');
+    uartputc('\n');
   }
+
+  uartputc('w');
+  uartputc('[');
+  uartputc("0123456789abcdef"[data / 16]);
+  uartputc("0123456789abcdef"[data % 16]);
+  uartputc(']');
+  uartputc('\n');
 
   shift |= shiftcode[data];
   shift ^= togglecode[data];
