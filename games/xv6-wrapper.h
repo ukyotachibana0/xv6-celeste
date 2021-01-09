@@ -29,15 +29,15 @@ typedef unsigned int size_t;
 
 #define NULL  ((void *)0)
 
-static inline float fminf(float a, float b) { return a < b ? a : b; }
-static inline float fmaxf(float a, float b) { return a > b ? a : b; }
-static inline float floorf(float x) {
+static float fminf(float a, float b) { return a < b ? a : b; }
+static float fmaxf(float a, float b) { return a > b ? a : b; }
+static float floorf(float x) {
   int i = (int)x;
   return (x >= 0 ? (float)i : (i == x ? i : (i - 1)));
 }
-static inline float roundf(float x) { return floorf(x + 0.5f); }
-static inline float fabsf(float x) { return x >= 0 ? x : -x; }
-static inline float fmodf(float x, float y) {
+static float roundf(float x) { return floorf(x + 0.5f); }
+static float fabsf(float x) { return x >= 0 ? x : -x; }
+static float fmodf(float x, float y) {
   // Assumes y > 0
   return x - floorf(x / y) * y;
 }
@@ -48,17 +48,18 @@ static inline float fmodf(float x, float y) {
 #define M_PI_2  9.8696044010893586f
 #define M_E     2.718281828459045f
 #endif
-static inline float sinf(float x) {
+static float sinf(float x) {
   x = fmodf(x + M_PI, M_2_PI) - M_PI;
-  if (x < 0) return -sinf(-x);
+  unsigned neg = 0;
+  if (x < 0) { neg = 1; x = -x; }
   float x2 = x * x;
   // Bhaskara I's sine approximation formula
-  return 4 * x * (M_PI - x) / (1.25f * M_PI_2 - x * (M_PI - x));
+  return (neg ? -4 : 4) * x * (M_PI - x) / (1.25f * M_PI_2 - x * (M_PI - x));
   // return ((1.f/120 * x2 - 1.f/6) * x2 + 1) * x;
 }
-static inline float cosf(float x) { return sinf(x + M_PI/2); }
+static float cosf(float x) { return sinf(x + M_PI/2); }
 
-static inline float expf(float x) {
+static float expf(float x) {
   float base = M_E;
   if (x < 0) { base = 1.0f/M_E; x = -x; }
   unsigned y = (unsigned)x;
@@ -74,7 +75,7 @@ static inline float expf(float x) {
   ret *= ((x+3)*(x+3) + 3) / ((x-3)*(x-3) + 3);
   return ret;
 }
-static inline float lnf(float x) { return 0; }  // TODO
-static inline float powf(float x, float y) { return expf(y * lnf(x)); }
+static float lnf(float x) { return 0; }  // TODO
+static float powf(float x, float y) { return expf(y * lnf(x)); }
 
 #endif

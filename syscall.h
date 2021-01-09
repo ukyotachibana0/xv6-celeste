@@ -23,3 +23,4 @@
 #define SYS_imgdraw 22
 #define SYS_apictimer 23
 #define SYS_kbd 24
+#define SYS_charinput 28

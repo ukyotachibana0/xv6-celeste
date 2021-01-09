@@ -506,15 +506,3 @@ int sys_apictimer(void){
   int r = (ticr * (ticks + 1) - tccr) / 10000; 
   return r;
 }
-
-int kb_mode[256] = { 0 };
-
-int sys_kbd(void)
-{
-  int index;
-  if(argint(0, (void*)&index) < 0)
-    return -1;
-  if(index < 0 || index > 255)    //param out of range
-    return -1;
-  return kb_mode[index];
-}

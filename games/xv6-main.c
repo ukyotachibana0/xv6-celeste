@@ -4,6 +4,7 @@
 
 int main()
 {
+    charinput(0);
     game_init();
 
     // int T = 0;
@@ -23,7 +24,7 @@ int main()
         }
         // if(tmp == 0)
         //   printf(1, "what: %d %d\n", j, tmp);
-        if(cur - tmp > 4000 && uptime() != tmp_t){
+        if(cur - tmp > 2000 && uptime() != tmp_t){
             
             unsigned buttons = 0;
             if (kbd(0))     buttons |= BTN_L;

@@ -153,16 +153,13 @@ _%: %.o $(ULIB)
 	$(OBJDUMP) -t $@ | sed '1,/SYMBOL TABLE/d; s/ .* / /; /^$$/d' > $*.sym
 
 games/%.o: games/%.c
-	$(CC) -c $^ -o $@ $(subst -Wall, , $(CFLAGS)) -DXV6 -I. -Igames -Os
+	$(CC) -c $^ -o $@ $(subst -Wall, , $(CFLAGS)) -DXV6 -I. -Igames -O2
 
-games/xv6-tetris/%.o: games/xv6-tetris/%.c
-	$(CC) -c $^ -o $@ $(subst -Wall, , $(CFLAGS)) -DXV6 -I. -Igames -Os
 _tetris: games/xv6-main.o games/xv6-tetris/game.o games/xv6-tetris/tetris.o $(ULIB)
 	$(LD) $(LDFLAGS) -N -e main -Ttext 0 -o $@ $^
 	$(OBJDUMP) -S $@ > $@.asm
+	$(STRIP) $@
 
-games/celeste/%.o: games/celeste/%.c
-	$(CC) -c $^ -o $@ $(subst -Wall, , $(CFLAGS)) -DXV6 -I. -Igames -Os
 _celeste: games/xv6-main.o games/celeste/p8.o games/celeste/celeste.o $(ULIB)
 	$(LD) $(LDFLAGS) -N -e main -Ttext 0 -o $@ $^
 	$(OBJDUMP) -S $@ > $@.asm
