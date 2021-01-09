@@ -1,6 +1,10 @@
 #include "tetris.h"
 
+#ifdef XV6
+#include "xv6-wrapper.h"
+#else
 #include <string.h>
+#endif
 
 tetro_type TETRO[7] = {
     {

@@ -1,7 +1,11 @@
 #ifndef GAME_H
 #define GAME_H
 
+#ifdef XV6
+#include "xv6-wrapper.h"
+#else
 #include <stdint.h>
+#endif
 
 #define SCR_W   320
 #define SCR_H   200

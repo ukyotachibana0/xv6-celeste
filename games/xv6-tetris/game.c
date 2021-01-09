@@ -1,8 +1,12 @@
 #include "../game.h"
 #include "tetris.h"
 
+#ifdef XV6
+#include "xv6-wrapper.h"
+#else
 #include <math.h>
 #include <string.h>
+#endif
 
 #ifndef M_PI
 #define M_PI  3.1415926535897932384626433832795
@@ -22,7 +26,7 @@
 #define CHAR_H  14
 static uint8_t font_data[CHAR_W * CHAR_H * 16 * 6];
 
-static uint8_t buf[200][320][4];
+static uint8_t buf[200][320][3];
 
 #define SCR_MENU    0
 #define SCR_GAME    1
@@ -43,7 +47,6 @@ static uint32_t b0, b1;
 
 static void game_game_init();
 static void game_game_draw();
-static void overlay_init();
 static void overlay_draw();
 
 #define btn(__b)    (!!(b0 & (__b)))
@@ -51,6 +54,7 @@ static void overlay_draw();
 
 static inline void pix(uint16_t x, uint16_t y, uint8_t r, uint8_t g, uint8_t b)
 {
+    if (x >= 320 || y >= 200) return;
     buf[y][x][0] = r;
     buf[y][x][1] = g;
     buf[y][x][2] = b;
@@ -58,6 +62,7 @@ static inline void pix(uint16_t x, uint16_t y, uint8_t r, uint8_t g, uint8_t b)
 
 static inline void pix_alpha(uint16_t x, uint16_t y, uint8_t r, uint8_t g, uint8_t b, uint8_t a)
 {
+    if (x >= 320 || y >= 200) return;
     buf[y][x][0] += (((int16_t)r - buf[y][x][0]) * a) >> 8;
     buf[y][x][1] += (((int16_t)g - buf[y][x][1]) * a) >> 8;
     buf[y][x][2] += (((int16_t)b - buf[y][x][2]) * a) >> 8;
@@ -104,10 +109,12 @@ static inline void text_xcen(uint16_t x, uint16_t y, const char *str)
 }
 
 
+/*
 static const uint8_t bg[] = {
     // ffmpeg -f rawvideo -pix_fmt rgb24 - -i background03.png | xxd -i > bg.h
     #include "bg.h"
 };
+*/
 
 
 #define PARTICLES_MAX   4096
@@ -446,9 +453,7 @@ void overlay_draw()
 {
     uint8_t *_buf = &buf[0][0][0];
     for (size_t i = 0; i < sizeof buf; i++)
-        if (i % 4 != 3) _buf[i] = ((uint16_t)_buf[i] * 3) >> 3;
-    //uint8_t *start = &buf[64][0][0], *end = &buf[112][0][0];
-    //for (; start < end; start++) *start = ((uint16_t)*start * 3) >> 3;
+        _buf[i] = ((uint16_t)_buf[i] * 3) >> 3;
 
     const char *msg = (screen == SCR_WIN ?
         (mode == MODE_SPRINT ? "Supercalifragilisticexpialidocious" : "It's been great work!") :
@@ -467,23 +472,21 @@ void game_audio(unsigned samples, int16_t *pcm)
 
 ////// MAIN //////
 
+static const uint8_t bg[3] = {4, 20, 36};
+
 void bg_draw()
 {
     for (uint16_t y = 0; y < 200; y++)
     for (uint16_t x = 0; x < 320; x++)
     for (uint8_t ch = 0; ch < 3; ch++)
-        buf[y][x][ch] = bg[((x * 256 / 320) + ((y + 80) * 256 / 320) * 256) * 3 + (2 - ch)];
+        // buf[y][x][ch] = bg[((x * 256 / 320) + ((y + 80) * 256 / 320) * 256) * 3 + (2 - ch)];
+        buf[y][x][ch] = bg[ch];
 }
 
 void game_init()
 {
     b0 = b1 = 0;
     screen = SCR_MENU;
-    for(int i = 0; i<200;i++){
-        for(int j = 0; j < 320; j++){
-            buf[i][j][3] = 255;
-        }
-    }
 }
 
 void game_update(unsigned buttons)

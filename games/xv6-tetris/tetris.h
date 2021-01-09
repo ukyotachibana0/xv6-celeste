@@ -1,8 +1,12 @@
 #ifndef __TETRIS_H__
 #define __TETRIS_H__
 
+#ifdef XV6
+#include "xv6-wrapper.h"
+#else
 #include <stdbool.h>
 #include <stdint.h>
+#endif
 
 #define MATRIX_W    10
 #define MATRIX_H    30

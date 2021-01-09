@@ -505,6 +505,7 @@ int sys_apictimer(void){
   // cprintf("t: %d %d %d\n", ticks, ticr, tccr);
   int r = (ticr * (ticks + 1) - tccr) / 10000; 
   return r;
+}
 
 int kb_mode[256] = { 0 };
 

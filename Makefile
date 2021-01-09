@@ -151,6 +151,16 @@ _%: %.o $(ULIB)
 	$(OBJDUMP) -S $@ > $*.asm
 	$(OBJDUMP) -t $@ | sed '1,/SYMBOL TABLE/d; s/ .* / /; /^$$/d' > $*.sym
 
+games/%.o: games/%.c
+	$(CC) -c $^ -o $@ $(subst -Wall, , $(CFLAGS)) -DXV6 -I. -Igames -Os
+
+games/xv6-tetris/%.o: games/xv6-tetris/%.c
+	$(CC) -c $^ -o $@ $(subst -Wall, , $(CFLAGS)) -DXV6 -I. -Igames -Os
+
+_tetris: games/xv6-main.o games/xv6-tetris/game.o games/xv6-tetris/tetris.o $(ULIB)
+	$(LD) $(LDFLAGS) -N -e main -Ttext 0 -o $@ $^
+	$(OBJDUMP) -S $@ > $@.asm
+
 _forktest: forktest.o $(ULIB)
 	# forktest has less library code linked in - needs to be small
 	# in order to be able to max out the proc table.
@@ -179,6 +189,7 @@ UPROGS=\
 	_rm\
 	_sh\
 	_stressfs\
+	_tetris\
 	_usertests\
 	_wc\
 	_zombie\
@@ -193,6 +204,8 @@ clean:
 	*.o *.d *.asm *.sym vectors.S bootblock entryother \
 	initcode initcode.out kernel xv6.img fs.img kernelmemfs \
 	xv6memfs.img mkfs .gdbinit \
+	games/*.o games/*/*.o \
+	games/*.d games/*/*.d \
 	$(UPROGS)
 
 # make a printout

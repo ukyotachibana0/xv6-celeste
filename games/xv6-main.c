@@ -1,12 +1,12 @@
 #include "game.h"
+#include "types.h"
 #include "user.h"
-#include <stdlib.h>
 
 int main()
 {
     game_init();
 
-    int T = 0;
+    // int T = 0;
     int tmp = 0;
     int tmp_t = 0;
     // int flag = 0;
@@ -23,7 +23,7 @@ int main()
         }
         // if(tmp == 0)
         //   printf(1, "what: %d %d\n", j, tmp);
-        if(cur - tmp > 8000 && uptime() != tmp_t){
+        if(cur - tmp > 4000 && uptime() != tmp_t){
             
             unsigned buttons = 0;
             if (kbd(0))     buttons |= BTN_L;
