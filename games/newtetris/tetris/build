@@ -1,0 +1,2 @@
+#!/bin/sh
+gcc api_glfw.c tetris.c main.c -lglfw -lm -lGL -lGLEW -O2 -std=c99 -o tetris $EXTRAFLAGS

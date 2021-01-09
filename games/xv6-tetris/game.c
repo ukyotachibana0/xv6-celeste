@@ -1,4 +1,4 @@
-#include "api.h"
+#include "../game.h"
 #include "tetris.h"
 
 #include <math.h>
@@ -22,7 +22,7 @@
 #define CHAR_H  14
 static uint8_t font_data[CHAR_W * CHAR_H * 16 * 6];
 
-static uint8_t buf[200][320][3];
+static uint8_t buf[200][320][4];
 
 #define SCR_MENU    0
 #define SCR_GAME    1
@@ -41,8 +41,8 @@ static uint8_t level;
 static uint32_t T;
 static uint32_t b0, b1;
 
-static void game_init();
-static void game_draw();
+static void game_game_init();
+static void game_game_draw();
 static void overlay_init();
 static void overlay_draw();
 
@@ -51,16 +51,16 @@ static void overlay_draw();
 
 static inline void pix(uint16_t x, uint16_t y, uint8_t r, uint8_t g, uint8_t b)
 {
-    buf[y][x][2] = r;
+    buf[y][x][0] = r;
     buf[y][x][1] = g;
-    buf[y][x][0] = b;
+    buf[y][x][2] = b;
 }
 
 static inline void pix_alpha(uint16_t x, uint16_t y, uint8_t r, uint8_t g, uint8_t b, uint8_t a)
 {
-    buf[y][x][2] += (((int16_t)r - buf[y][x][2]) * a) >> 8;
+    buf[y][x][0] += (((int16_t)r - buf[y][x][0]) * a) >> 8;
     buf[y][x][1] += (((int16_t)g - buf[y][x][1]) * a) >> 8;
-    buf[y][x][0] += (((int16_t)b - buf[y][x][0]) * a) >> 8;
+    buf[y][x][2] += (((int16_t)b - buf[y][x][2]) * a) >> 8;
 }
 
 static inline void lineh(
@@ -174,14 +174,14 @@ static void menu_update()
 
     uint8_t m0 = menu_sel;
 
-    if (btnp(BUTTON_DOWN)) menu_sel = (menu_sel + 1) % 3;
-    if (btnp(BUTTON_UP)) menu_sel = (menu_sel + 2) % 3;
-    if (btnp(BUTTON_CRO)) {
+    if (btnp(BTN_D)) menu_sel = (menu_sel + 1) % 3;
+    if (btnp(BTN_U)) menu_sel = (menu_sel + 2) % 3;
+    if (btnp(BTN_C)) {
         screen = SCR_GAME;
         mode = menu_sel;
-        game_init();
+        game_game_init();
     }
-    if (btnp(BUTTON_CIR)) {
+    if (btnp(BTN_X)) {
         uint16_t x = mrand() % 128 + 64;
         uint16_t y = mrand() % 128 + 64;
         for (uint8_t i = 0; i < 64; i++)
@@ -232,7 +232,7 @@ static const uint8_t MINO_COLOURS[7][3] = {
     {237, 41, 57}
 };
 
-static void game_init()
+static void game_game_init()
 {
     particle_count = 0; // Clear particles
 
@@ -243,13 +243,13 @@ static void game_init()
     tetris_spawn();
 }
 
-static void game_update()
+static void game_game_update()
 {
     T++;
 
     int32_t hor = 0;
-    if (btn(BUTTON_LEFT)) hor -= 1;
-    if (btn(BUTTON_RIGHT)) hor += 1;
+    if (btn(BTN_L)) hor -= 1;
+    if (btn(BTN_R)) hor += 1;
     if (hor != 0) {
         if (hor_hold == 0 || (hor_hold >= 20 && hor_hold % 2 == 0))
             tetris_hor(hor);
@@ -259,16 +259,16 @@ static void game_update()
     }
     last_hor = hor;
 
-    if (btn(BUTTON_DOWN)) {
+    if (btn(BTN_D)) {
         if (drop_hold++ % 2 == 0) tetris_drop();
     } else {
         drop_hold = 0;
     }
 
-    if (btnp(BUTTON_CIR) || btnp(BUTTON_UP)) tetris_rotate(+1);
-    if (btnp(BUTTON_CRO)) tetris_rotate(-1);
-    if (btnp(BUTTON_SQR)) tetris_harddrop();
-    if (btnp(BUTTON_TRI)) tetris_hold();
+    if (btnp(BTN_X) || btnp(BTN_U)) tetris_rotate(+1);
+    if (btnp(BTN_C)) tetris_rotate(-1);
+    if (btnp(BTN_Z)) tetris_harddrop();
+    if (btnp(BTN_SP)) tetris_hold();
 
     uint32_t action = tetris_tick();
     if (action & TETRIS_LOCKDOWN) {
@@ -419,7 +419,7 @@ static inline void draw_matrix()
     }
 }
 
-static void game_draw()
+static void game_game_draw()
 {
     draw_matrix();
 }
@@ -429,11 +429,11 @@ static void game_draw()
 
 void overlay_update()
 {
-    if (btnp(BUTTON_CRO)) {
+    if (btnp(BTN_C)) {
         // Restart
         screen = SCR_GAME;
-        game_init();
-    } else if (btnp(BUTTON_CIR)) {
+        game_game_init();
+    } else if (btnp(BTN_X)) {
         // Back
         last_menu_sel = menu_sel;
         menu_sel_time = T = 0;
@@ -445,16 +445,23 @@ void overlay_update()
 void overlay_draw()
 {
     uint8_t *_buf = &buf[0][0][0];
-    for (size_t i = 0; i < sizeof buf; i++) _buf[i] = ((uint16_t)_buf[i] * 3) >> 3;
+    for (size_t i = 0; i < sizeof buf; i++)
+        if (i % 4 != 3) _buf[i] = ((uint16_t)_buf[i] * 3) >> 3;
     //uint8_t *start = &buf[64][0][0], *end = &buf[112][0][0];
     //for (; start < end; start++) *start = ((uint16_t)*start * 3) >> 3;
 
     const char *msg = (screen == SCR_WIN ?
         (mode == MODE_SPRINT ? "Supercalifragilisticexpialidocious" : "It's been great work!") :
         (mode == MODE_MARATHON ? "It's been great work!" : "Oops! Try again"));
-    text_xcen(200, 88, msg);
-    text_str(155, 120, "[X] - Restart");
-    text_str(155, 136, "[O] - Back");
+    text_xcen(160, 72, msg);
+    text_str(115, 104, "[C] - Restart");
+    text_str(115, 120, "[X] - Back");
+}
+
+
+void game_audio(unsigned samples, int16_t *pcm)
+{
+  memset(pcm, 0, samples * 2);
 }
 
 
@@ -465,35 +472,40 @@ void bg_draw()
     for (uint16_t y = 0; y < 200; y++)
     for (uint16_t x = 0; x < 320; x++)
     for (uint8_t ch = 0; ch < 3; ch++)
-        buf[y][x][ch] = bg[((x * 256 / 320) + ((y + 80) * 256 / 320) * 256) * 3 + ch];
+        buf[y][x][ch] = bg[((x * 256 / 320) + ((y + 80) * 256 / 320) * 256) * 3 + (2 - ch)];
 }
 
-void init()
+void game_init()
 {
     b0 = b1 = 0;
     screen = SCR_MENU;
+    for(int i = 0; i<200;i++){
+        for(int j = 0; j < 320; j++){
+            buf[i][j][3] = 255;
+        }
+    }
 }
 
-void update()
+void game_update(unsigned buttons)
 {
     b1 = b0;
-    b0 = buttons();
+    b0 = buttons;
     switch (screen) {
         case SCR_MENU: menu_update(); break;
-        case SCR_GAME: game_update(); break;
+        case SCR_GAME: game_game_update(); break;
         case SCR_WIN: case SCR_LOSE: overlay_update(); break;
         default: break;
     }
 }
 
-void *draw()
+void *game_draw()
 {
     bg_draw();
     switch (screen) {
         case SCR_MENU: menu_draw(); break;
-        case SCR_GAME: game_draw(); break;
+        case SCR_GAME: game_game_draw(); break;
         case SCR_WIN: case SCR_LOSE:
-            game_draw();
+            game_game_draw();
             overlay_draw();
         default: break;
     }

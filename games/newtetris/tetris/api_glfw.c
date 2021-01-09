@@ -176,7 +176,7 @@ int main()
 
     // -- Event/render loop --
 
-    init();
+    game_init();
 
     float last_time = glfwGetTime(), cur_time;
 
@@ -188,13 +188,13 @@ int main()
         glClearColor(0.7f, 0.7f, 0.7f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
 
-        update();
+        game_update(buttons());
 
         while ((cur_time = glfwGetTime()) < last_time + 1.0f / FPS) usleep(1000);
         last_time = cur_time;
 
         // TODO: Optionally skip draw() calls
-        void *nbuf = draw();
+        void *nbuf = game_draw();
         memcpy(buf, nbuf, sizeof buf);
 
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB8, TEX_W, TEX_H,
@@ -218,14 +218,14 @@ uint32_t buttons()
     if (buttons_updated) return last_buttons;
 
     uint32_t ret =
-        (glfwGetKey(window, GLFW_KEY_UP) << 0) |
-        (glfwGetKey(window, GLFW_KEY_DOWN) << 1) |
-        (glfwGetKey(window, GLFW_KEY_LEFT) << 2) |
-        (glfwGetKey(window, GLFW_KEY_RIGHT) << 3) |
+        (glfwGetKey(window, GLFW_KEY_LEFT) << 0) |
+        (glfwGetKey(window, GLFW_KEY_RIGHT) << 1) |
+        (glfwGetKey(window, GLFW_KEY_UP) << 2) |
+        (glfwGetKey(window, GLFW_KEY_DOWN) << 3) |
         (glfwGetKey(window, GLFW_KEY_C) << 4) |
         (glfwGetKey(window, GLFW_KEY_X) << 5) |
         (glfwGetKey(window, GLFW_KEY_Z) << 6) |
-        (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) << 7) |
+        (glfwGetKey(window, GLFW_KEY_SPACE) << 7) |
         (glfwGetKey(window, GLFW_KEY_W) << 0) |     // Alternative set of keys
         (glfwGetKey(window, GLFW_KEY_S) << 1) |
         (glfwGetKey(window, GLFW_KEY_A) << 2) |
@@ -237,10 +237,10 @@ uint32_t buttons()
     if (glfwJoystickIsGamepad(GLFW_JOYSTICK_1)) {
         GLFWgamepadstate state;
         if (glfwGetGamepadState(GLFW_JOYSTICK_1, &state)) ret |=
-            (state.buttons[GLFW_GAMEPAD_BUTTON_DPAD_UP] << 0) |
-            (state.buttons[GLFW_GAMEPAD_BUTTON_DPAD_DOWN] << 1) |
-            (state.buttons[GLFW_GAMEPAD_BUTTON_DPAD_LEFT] << 2) |
-            (state.buttons[GLFW_GAMEPAD_BUTTON_DPAD_RIGHT] << 3) |
+            (state.buttons[GLFW_GAMEPAD_BUTTON_DPAD_UP] << 2) |
+            (state.buttons[GLFW_GAMEPAD_BUTTON_DPAD_DOWN] << 3) |
+            (state.buttons[GLFW_GAMEPAD_BUTTON_DPAD_LEFT] << 0) |
+            (state.buttons[GLFW_GAMEPAD_BUTTON_DPAD_RIGHT] << 1) |
             (state.buttons[GLFW_GAMEPAD_BUTTON_A] << 4) |
             (state.buttons[GLFW_GAMEPAD_BUTTON_B] << 5) |
             (state.buttons[GLFW_GAMEPAD_BUTTON_X] << 6) |
