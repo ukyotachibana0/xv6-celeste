@@ -478,7 +478,7 @@ void game_init()
 {
     b0 = b1 = 0;
     screen = SCR_MENU;
-    for(int i = 0; i < 200; i++){
+    for(int i = 0; i<200;i++){
         for(int j = 0; j < 320; j++){
             buf[i][j][3] = 1;
         }
@@ -508,7 +508,6 @@ void *game_draw()
             overlay_draw();
         default: break;
     }
-    buf[0][0][0] = 255;
     return (void *)buf;
 }
 
