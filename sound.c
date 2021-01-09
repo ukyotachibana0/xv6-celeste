@@ -7,7 +7,7 @@
 static inline uchar sb16_in()
 {
   while (!(inb(0x22e) & (1 << 7))) { }
-  return inb(0x22a);
+  return inb(0x22a);  
 }
 static inline void sb16_out(uchar data)
 {
@@ -26,23 +26,27 @@ static inline void sb16_mixer_out(uchar reg, uchar data)
 }
 
 static short *buf;
+static short user_buf[1024];
+static int is_tr = 0;
 
 static void refill()
 {
   static unsigned buffer = 0;
-  static int phase = 0;
   for (int i = 0; i < 1024; i++) {
-    buf[buffer + i] = (phase >= 25 ? 50 - phase : phase) * 120;
-    phase = (phase + 1) % 50;
+    // buf[buffer + i] = (phase >= 25 ? 50 - phase : phase) * 120;
+    // phase = (phase + 1) % 50;
+    buf[buffer + i] = user_buf[i];
   }
   // for (int i = 0; i < 2048; i++) buf[i] = (++phase) % 12999;
   // buf[0] = 29999;
   buffer ^= 1024;
+  is_tr = 1;
 }
 
+//sound initialize
 void sndinit()
 {
-  ioapicenable(IRQ_SB16, 0);
+  ioapicenable(IRQ_SB16, 0); //启用声卡中断
 
   // Initialize DSP
   outb(0x226, 1);
@@ -55,22 +59,24 @@ void sndinit()
   cprintf("IRQ selection: 0x%x\n", sb16_mixer_in(0x80));
   cprintf("DMA selection: 0x%x\n", sb16_mixer_in(0x81));
 
+
+
   // Allocate buffer
-  buf = (short *)kalloc();
+  buf = (short *)kalloc(); // 4k
   unsigned paddr = (unsigned)V2P(buf);
   cprintf("buffer: vaddr=%x paddr=%x\n", (unsigned)buf, paddr);
   memset(buf, 0, 4096);
 
   // Program DMA channel 5
-  outb(0xd4, 0x04 + 1);
-  outb(0xd8, 1);
-  outb(0xd6, 0x58 + 1);
-  outb(0x8b, (paddr >> 16) & 0xff);
-  outb(0xc4, (paddr >>  1) & 0xff);
-  outb(0xc4, (paddr >>  9) & 0xff);
-  outb(0xc6, 0xff);
-  outb(0xc6, 0x07); // 2048 words
-  outb(0xd4, 1);
+  outb(0xd4, 0x04 + 1);  //关闭DMA 5
+  outb(0xd8, 1);  //flip flop 随便写一个数
+  outb(0xd6, 0x58 + 1);  // 16bit 自动初始化
+  outb(0x8b, (paddr >> 16) & 0xff);  //写入段号
+  outb(0xc4, (paddr >>  1) & 0xff);  // 写入段内偏移
+  outb(0xc4, (paddr >>  9) & 0xff);  // 写入段内偏移
+  outb(0xc6, 0xff);   
+  outb(0xc6, 0x07); // 2048 words  2 byte - word
+  outb(0xd4, 1);  //启用DMA 5
   cprintf("DMA status: %x\n", inb(0xd0));
 
   sb16_out(0x41);
@@ -91,4 +97,18 @@ void sndintr()
   // for (const char *s = "interrupt!\n"; *s != 0; s++)
   //   uartputc(*s);
   refill();
+}
+
+int sys_setsound(void){
+  is_tr = 0;
+  short* tmp_buf;
+  argptr(0, (void*)&tmp_buf, 2048);
+  for(int i = 0; i < 1024; i++){
+    user_buf[i] = tmp_buf[i];
+  }
+  return 1;
+}
+
+int sys_trsound(void){
+  return is_tr;
 }

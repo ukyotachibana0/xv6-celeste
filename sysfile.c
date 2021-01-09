@@ -459,6 +459,7 @@ int sys_imgdraw(void){
       unsigned char r = img[i*320*3 + j*3] >> 2;
       unsigned char g = img[i*320*3 + j*3 + 1] >> 2;
       unsigned char b = img[i*320*3 + j*3 + 2] >> 2;
+
       int k = 0;
       for(k = 0; k < palette_code; k++){
         if(palette[k] == (int)r * 256 * 256 + (int)g * 256 + (int)b){
@@ -485,6 +486,7 @@ int sys_imgdraw(void){
   // }
   return 1;
 }
+
 
 int sys_vretrace(void){
   unsigned char is_vRetrace = inb(0x3ba);

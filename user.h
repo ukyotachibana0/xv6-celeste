@@ -25,6 +25,8 @@ int sleep(int);
 int uptime(void);
 int imgdraw(unsigned char*);
 int vretrace(void);
+int setsound(short*);
+int trsound();
 
 // ulib.c
 int stat(const char*, struct stat*);
