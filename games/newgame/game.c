@@ -3,7 +3,7 @@
 
 unsigned char img[128][128][4];
 
-void game_init()
+void game_game_init()
 {
 }
 

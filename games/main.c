@@ -23,7 +23,7 @@ int main()
   });
   free(data);
 
-  game_init();
+  game_game_init();
 
   InitAudioDevice();
   SetAudioStreamBufferSizeDefault(AUDIO_BLOCK_SIZE);

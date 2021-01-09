@@ -1,10 +1,7 @@
-#ifndef GAME_H
-#define GAME_H
+#ifndef __MIKAN__API_H__
+#define __MIKAN__API_H__
 
 #include <stdint.h>
-
-#define SCR_W   320
-#define SCR_H   200
 
 #define BTN_L  (1u << 0)
 #define BTN_R  (1u << 1)
@@ -15,11 +12,15 @@
 #define BTN_Z  (1u << 6)
 #define BTN_SP (1u << 7)
 
-void game_game_init();
-// 30 fps
+typedef void (*update_func_t)();
+typedef void *(*draw_func_t)();
+void register_loop(update_func_t update, draw_func_t draw);
+
+uint32_t buttons();
+
+// Provided by application
+void game_init();
 void game_update(unsigned buttons);
-// 返回 320*200 的 RGBA 数组首指针
 void *game_draw();
-void game_audio(unsigned samples, int16_t *pcm);
 
 #endif
