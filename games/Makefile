@@ -9,7 +9,7 @@ CFLAGS += -I. -g
 # LDEXTRAFLAGS = raylib/lib/libraylib_macos.a -framework OpenGL -framework OpenAL -framework IOKit -framework CoreVideo -framework Cocoa
 
 # Linux
-LDEXTRAFLAGS = raylib/lib/libraylib_linux.a -lc -lm
+LDEXTRAFLAGS = raylib/lib/libraylib_linux.a -lc -lm -ldl -lpthread
 
 OBJS = main.o $(patsubst %.c, %.o, $(wildcard $(GAME)/*.c))
 
