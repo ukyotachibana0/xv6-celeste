@@ -491,7 +491,6 @@ int sys_imgdraw(void){
   return 1;
 }
 
-<<<<<<< HEAD
 int sys_apictimer(void){
   // outb(0x43, 0x0b);
   // unsigned char low = inb(0x40);
@@ -506,15 +505,6 @@ int sys_apictimer(void){
   // cprintf("t: %d %d %d\n", ticks, ticr, tccr);
   int r = (ticr * (ticks + 1) - tccr) / 10000; 
   return r;
-=======
-int sys_vretrace(void){
-  unsigned char is_vRetrace = inb(0x3ba);
-  // if(is_vRetrace & 0x08){
-  //   return 1;
-  // }
-  // else return 0;
-  return is_vRetrace;
-}
 
 int kb_mode[256] = { 0 };
 
@@ -526,5 +516,4 @@ int sys_kbd(void)
   if(index < 0 || index > 255)    //param out of range
     return -1;
   return kb_mode[index];
->>>>>>> 1781a546a9cd864b368df809e6905e155f69337b
 }
