@@ -147,6 +147,8 @@ static unsigned cursrow = 0, curscol = 0;
 #define PADDING_U 2
 #define PADDING_D 2
 
+extern unsigned char isconsole;
+
 static void
 cgaputc(int c)
 {
@@ -174,6 +176,8 @@ cgaputc(int c)
     memset(&cbuf[CHAR_ROWS - 1][0], 0, CHAR_COLS);
     cursrow--;
   }
+
+  if (!isconsole) return;
 
 /*
   for (int r = 0; r < CHAR_ROWS; r++)

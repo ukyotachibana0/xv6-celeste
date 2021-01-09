@@ -106,7 +106,7 @@ extern int sys_uptime(void);
 extern int sys_imgdraw(void);
 extern int sys_apictimer(void);
 extern int sys_kbd(void);
-extern int sys_charinput(void);
+extern int sys_consmode(void);
 
 static int (*syscalls[])(void) = {
 [SYS_fork]    sys_fork,
@@ -133,7 +133,7 @@ static int (*syscalls[])(void) = {
 [SYS_imgdraw]   sys_imgdraw,
 [SYS_apictimer]  sys_apictimer,
 [SYS_kbd]     sys_kbd,
-[SYS_charinput] sys_charinput,
+[SYS_consmode] sys_consmode,
 };
 
 void

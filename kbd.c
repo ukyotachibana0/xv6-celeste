@@ -3,7 +3,7 @@
 #include "defs.h"
 #include "kbd.h"
 
-static unsigned char ischarinput = 1;
+unsigned char isconsole = 1;
 
 int
 kbdgetc(void)
@@ -28,7 +28,7 @@ kbdgetc(void)
 
   if(data == 0xE0){
     shift |= E0ESC;
-    return (ischarinput ? 0 : -1);
+    return (isconsole ? 0 : -1);
   } else if(data & 0x80){
     // Key released
 
@@ -60,7 +60,7 @@ kbdgetc(void)
     if(mode_map[data] != 0){
       kb_mode[mode_map[data]] = 0;
     }
-    return (ischarinput ? 0 : -1);
+    return (isconsole ? 0 : -1);
   } else if(shift & E0ESC){
     // Last character was an E0 escape; or with 0x80
     data |= 0x80;
@@ -108,7 +108,7 @@ kbdgetc(void)
     else if('A' <= c && c <= 'Z')
       c += 'a' - 'A';
   }
-  return (ischarinput ? c : -1);
+  return (isconsole ? c : -1);
 }
 
 void
@@ -129,10 +129,10 @@ int sys_kbd(void)
   return kb_mode[index];
 }
 
-int sys_charinput(void)
+int sys_consmode(void)
 {
   int mode;
   if (argint(0, &mode) < 0) return -1;
-  ischarinput = (mode != 0);
+  isconsole = (mode == 0);
   return 0;
 }

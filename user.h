@@ -26,7 +26,7 @@ int uptime(void);
 int imgdraw(unsigned char*);
 int apictimer(void);
 int kbd(int);
-int charinput(int);
+int consmode(int);
 
 // ulib.c
 int stat(const char*, struct stat*);

@@ -4,7 +4,7 @@
 
 int main()
 {
-    charinput(0);
+    consmode(1);
     game_init();
 
     // int T = 0;
