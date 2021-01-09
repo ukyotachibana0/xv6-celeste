@@ -11,10 +11,10 @@
 #define M_SQRT1_2   0.7071067811865476
 #endif
 
-#define MINO_W      11
+#define MINO_W      9
 
-#define MATRIX_X1   ((400 - MATRIX_W * MINO_W) / 2)
-#define MATRIX_Y1   (240 - (240 - MATRIX_HV * MINO_W) / 2)
+#define MATRIX_X1   ((320 - MATRIX_W * MINO_W) / 2)
+#define MATRIX_Y1   (200 - (200 - MATRIX_HV * MINO_W) / 2)
 #define MATRIX_X2   (MATRIX_X1 + MATRIX_W * MINO_W)
 #define MATRIX_Y2   (MATRIX_Y1 - MATRIX_HV * MINO_W)
 
@@ -22,7 +22,7 @@
 #define CHAR_H  14
 static uint8_t font_data[CHAR_W * CHAR_H * 16 * 6];
 
-static uint8_t buf[240][400][3];
+static uint8_t buf[200][320][3];
 
 #define SCR_MENU    0
 #define SCR_GAME    1
@@ -197,10 +197,10 @@ static void menu_update()
 
 static void menu_draw()
 {
-    text_xcen(200, 60, "= T E T R I S =");
-    text_xcen(200, 120, "Marathon");
-    text_xcen(200, 120 + 24, "Sprint");
-    text_xcen(200, 120 + 48, "Ultra");
+    text_xcen(160, 48, "= T E T R I S =");
+    text_xcen(160, 98, "Marathon");
+    text_xcen(160, 98 + 24, "Sprint");
+    text_xcen(160, 98 + 48, "Ultra");
 
     int16_t x = sinf((float)T * 0.06f) * 1.9;
     uint16_t y = menu_sel * 24;
@@ -209,8 +209,8 @@ static void menu_draw()
         y -= (menu_sel - last_menu_sel) * rate * 24;
     }
 
-    text_char(144 - CHAR_W / 2 + x, 123 + y, '~');
-    text_char(256 - CHAR_W / 2 - x, 123 + y, '~');
+    text_char(104 - CHAR_W / 2 + x, 101 + y, '~');
+    text_char(216 - CHAR_W / 2 - x, 101 + y, '~');
 
     update_and_draw_particles();
 }
@@ -370,21 +370,21 @@ static inline void draw_matrix()
             drop_type);
 
     // Hold
-    text_str(82, 10, "Hold");
+    text_str(69, 13, "Hold");
     if (hold_type != MINO_NONE)
         for (int i = 0; i < 4; i++)
             draw_mino(
-                MATRIX_HV - 2 - TETRO[hold_type].bbsize + TETRO[hold_type].mino[0][i][0],
+                MATRIX_HV - 3 - TETRO[hold_type].bbsize + TETRO[hold_type].mino[0][i][0],
                 -5 + TETRO[hold_type].mino[0][i][1],
                 hold_type);
 
     // Preview
-    text_str(269, 10, "Next");
+    text_str(222, 13, "Next");
     for (int i = 0; i < 4; i++)     // Preview index
     for (int j = 0; j < 4; j++) {   // Mino index
         uint8_t t = drop_next[(drop_pointer + i) % 14];
         draw_mino(
-            MATRIX_HV - 2 - i * 3 - TETRO[t].bbsize + TETRO[t].mino[0][j][0],
+            MATRIX_HV - 3 - i * 3 - TETRO[t].bbsize + TETRO[t].mino[0][j][0],
             MATRIX_W + 2 + TETRO[t].mino[0][j][1],
             t);
     }
@@ -393,14 +393,14 @@ static inline void draw_matrix()
 
     char s[4] = { 0 };
 
-    text_str(82, 120, "Clear");
+    text_str(58, 100, "Clear");
     s[0] = '0' + clear_count / 100;
     s[1] = '0' + clear_count / 10 % 10;
     s[2] = '0' + clear_count % 10;
-    text_str(104, 136, s);
+    text_str(80, 116, s);
 
     if (mode == MODE_MARATHON) {
-        text_str(82, 172, "Level");
+        text_str(58, 144, "Level");
         s[0] = '0' + level / 100;
         s[1] = '0' + level / 10 % 10;
         s[2] = '0' + level % 10;
@@ -408,14 +408,14 @@ static inline void draw_matrix()
             s[0] = ' ';
             if (s[1] == '0') s[1] = ' ';
         }
-        text_str(104, 188, s);
+        text_str(80, 160, s);
     } else {
-        text_str(82, 172, "Time");
+        text_str(58, 144, "Time");
         uint32_t time = (mode == MODE_SPRINT ? T / 60 : ULTRA_DURATION - (T / 60));
         s[0] = '0' + time / 100;
         s[1] = '0' + time / 10 % 10;
         s[2] = '0' + time % 10;
-        text_str(104, 188, s);
+        text_str(80, 160, s);
     }
 }
 
@@ -462,10 +462,10 @@ void overlay_draw()
 
 void bg_draw()
 {
-    for (uint16_t y = 0; y < 240; y++)
-    for (uint16_t x = 0; x < 400; x++)
+    for (uint16_t y = 0; y < 200; y++)
+    for (uint16_t x = 0; x < 320; x++)
     for (uint8_t ch = 0; ch < 3; ch++)
-        buf[y][x][ch] = bg[((x * 256 / 400) + ((y + 80) * 256 / 400) * 256) * 3 + ch];
+        buf[y][x][ch] = bg[((x * 256 / 320) + ((y + 80) * 256 / 320) * 256) * 3 + ch];
 }
 
 void init()

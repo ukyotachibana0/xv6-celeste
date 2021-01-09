@@ -10,8 +10,8 @@
 #include "api.h"
 
 #define FPS     60
-#define TEX_W   400
-#define TEX_H   240
+#define TEX_W   320
+#define TEX_H   200
 
 #define WIN_W   (TEX_W * 2)
 #define WIN_H   (TEX_H * 2)
