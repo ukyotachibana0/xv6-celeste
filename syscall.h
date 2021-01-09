@@ -21,9 +21,5 @@
 #define SYS_mkdir  20
 #define SYS_close  21
 #define SYS_imgdraw 22
-<<<<<<< HEAD
 #define SYS_apictimer 23
-=======
-#define SYS_vretrace 23
 #define SYS_kbd 24
->>>>>>> 1781a546a9cd864b368df809e6905e155f69337b
