@@ -24,7 +24,12 @@ char* sbrk(int);
 int sleep(int);
 int uptime(void);
 int imgdraw(unsigned char*);
+<<<<<<< HEAD
+int apictimer(void);
+=======
 int vretrace(void);
+int kbd(int);
+>>>>>>> 1781a546a9cd864b368df809e6905e155f69337b
 
 // ulib.c
 int stat(const char*, struct stat*);
