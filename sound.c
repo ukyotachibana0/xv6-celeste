@@ -25,15 +25,19 @@ static inline void sb16_mixer_out(uchar reg, uchar data)
   outb(0x225, data);
 }
 
-static char *buf;
+static short *buf;
 
 static void refill()
 {
-  static unsigned seed = 2021;
-  for (int i = 0; i < 4096; i++) {
-    seed = (seed * 1103515245 + 12345) & 0x7fffffff;
-    buf[i] = (seed >> 24) & 0xff;
+  static unsigned buffer = 0;
+  static int phase = 0;
+  for (int i = 0; i < 1024; i++) {
+    buf[buffer + i] = (phase >= 25 ? 50 - phase : phase) * 120;
+    phase = (phase + 1) % 50;
   }
+  // for (int i = 0; i < 2048; i++) buf[i] = (++phase) % 12999;
+  // buf[0] = 29999;
+  buffer ^= 1024;
 }
 
 void sndinit()
@@ -52,7 +56,7 @@ void sndinit()
   cprintf("DMA selection: 0x%x\n", sb16_mixer_in(0x81));
 
   // Allocate buffer
-  buf = kalloc();
+  buf = (short *)kalloc();
   unsigned paddr = (unsigned)V2P(buf);
   cprintf("buffer: vaddr=%x paddr=%x\n", (unsigned)buf, paddr);
   memset(buf, 0, 4096);
@@ -65,7 +69,7 @@ void sndinit()
   outb(0xc4, (paddr >>  1) & 0xff);
   outb(0xc4, (paddr >>  9) & 0xff);
   outb(0xc6, 0xff);
-  outb(0xc6, 0x03); // 1024 words
+  outb(0xc6, 0x07); // 2048 words
   outb(0xd4, 1);
   cprintf("DMA status: %x\n", inb(0xd0));
 
