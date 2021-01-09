@@ -9,13 +9,22 @@
 #include <stdio.h>
 #include <string.h>
 
-static uint8_t fb[SCR_SIZE][SCR_SIZE][4];
+static uint8_t fb[128][128][4];
+static uint8_t out_fb[SCR_H][SCR_W][4];
 static unsigned cur_buttons;
 
 void *game_draw()
 {
   Celeste_P8_draw();
-  return (void *)&fb[0][0][0];
+  memset(out_fb, 0, sizeof out_fb);
+  for (int y = 0; y < 128; y++)
+    for (int x = 0; x < 128; x++)
+      for (int c = 0; c < 4; c++)
+        out_fb[(SCR_H - 128) / 2 + y]
+              [(SCR_W - 128) / 2 + x]
+              [c]
+          = fb[y][x][c];
+  return (void *)&out_fb[0][0][0];
 }
 
 void game_update(unsigned buttons)

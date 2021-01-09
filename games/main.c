@@ -2,22 +2,22 @@
 #include "raylib/include/raylib.h"
 #include <stdlib.h>
 
-#define WIN_SIZE  512
+#define WIN_SCALE   3
 
 #define AUDIO_BLOCK_SIZE  1024
 
 int main()
 {
-  InitWindow(WIN_SIZE, WIN_SIZE, "Window");
+  InitWindow(SCR_W * WIN_SCALE, SCR_H * WIN_SCALE, "Window");
   SetTargetFPS(30);
 
   // Create empty texture by loading empty texture data,
   // as raylib does not provide a more convenient API
-  void *data = malloc(SCR_SIZE * SCR_SIZE * 4);
+  void *data = malloc(SCR_W * SCR_H * 4);
   Texture2D tex = LoadTextureFromImage((Image) {
     .data = data,
-    .width = SCR_SIZE,
-    .height = SCR_SIZE,
+    .width = SCR_W,
+    .height = SCR_H,
     .mipmaps = 1,
     .format = UNCOMPRESSED_R8G8B8A8
   });
@@ -42,10 +42,10 @@ int main()
       if (IsKeyDown(KEY_RIGHT)) buttons |= BTN_R;
       if (IsKeyDown(KEY_UP))    buttons |= BTN_U;
       if (IsKeyDown(KEY_DOWN))  buttons |= BTN_D;
-      if (IsKeyDown(KEY_Z) || IsKeyDown(KEY_C) ||
-          IsKeyDown(KEY_N))     buttons |= BTN_O;
-      if (IsKeyDown(KEY_X) || IsKeyDown(KEY_V) ||
-          IsKeyDown(KEY_M))     buttons |= BTN_X;
+      if (IsKeyDown(KEY_C))     buttons |= BTN_C;
+      if (IsKeyDown(KEY_X))     buttons |= BTN_X;
+      if (IsKeyDown(KEY_Z))     buttons |= BTN_Z;
+      if (IsKeyDown(KEY_SPACE)) buttons |= BTN_SP;
       game_update(buttons);
 
       UpdateTexture(tex, game_draw());
@@ -56,8 +56,7 @@ int main()
       }
     }
 
-    DrawTextureEx(tex, (Vector2) {0, 0}, 0,
-      (float)WIN_SIZE / SCR_SIZE, WHITE);
+    DrawTextureEx(tex, (Vector2) {0, 0}, 0, WIN_SCALE, WHITE);
     EndDrawing();
   }
 

@@ -6,7 +6,10 @@ RM = rm -f
 CFLAGS += -I. -g
 
 # macOS
-LDEXTRAFLAGS = raylib/lib/libraylib_macos.a -framework OpenGL -framework OpenAL -framework IOKit -framework CoreVideo -framework Cocoa
+# LDEXTRAFLAGS = raylib/lib/libraylib_macos.a -framework OpenGL -framework OpenAL -framework IOKit -framework CoreVideo -framework Cocoa
+
+# Linux
+LDEXTRAFLAGS = raylib/lib/libraylib_linux.a -lc -lm
 
 OBJS = main.o $(patsubst %.c, %.o, $(wildcard $(GAME)/*.c))
 
