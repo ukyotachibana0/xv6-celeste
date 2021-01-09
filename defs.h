@@ -141,6 +141,7 @@ void            initsleeplock(struct sleeplock*, char*);
 
 // sound.c
 void            sndinit();
+void            sndintr();
 
 // string.c
 int             memcmp(const void*, const void*, uint);

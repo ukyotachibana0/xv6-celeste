@@ -124,7 +124,14 @@ OSDev Wiki：
 
 手册：
   https://pdos.csail.mit.edu/6.828/2018/readings/hardware/SoundBlaster.pdf
+  https://pdos.csail.mit.edu/6.828/2018/readings/hardware/8237A.pdf
   https://pdos.csail.mit.edu/6.828/2018/reference.html
+
+  http://petesqbsite.com/sections/tutorials/zines/basix/1-screen_13.txt
+  http://www.dcee.net/Files/Programm/Sound/ctsbk2.zip
+  http://homepages.cae.wisc.edu/~brodskye/other/code.html#sb16snd
+  http://homepages.cae.wisc.edu/~brodskye/sb16doc/sb16doc.html
 
 OSDev Wiki：
   https://wiki.osdev.org/Sound_Blaster_16
+  https://wiki.osdev.org/ISA_DMA
