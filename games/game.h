@@ -15,7 +15,7 @@
 #define BTN_Z  (1u << 6)
 #define BTN_SP (1u << 7)
 
-void game_game_init();
+void game_init();
 // 30 fps
 void game_update(unsigned buttons);
 // 返回 320*200 的 RGBA 数组首指针

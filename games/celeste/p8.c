@@ -545,7 +545,7 @@ static int p8_call(CELESTE_P8_CALLBACK_TYPE calltype, ...)
   return ret;
 }
 
-void game_game_init()
+void game_init()
 {
   camera_x = camera_y = 0;
   music_pattern = 0xff;
