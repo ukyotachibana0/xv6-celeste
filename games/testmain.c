@@ -1,4 +1,5 @@
 #include "game.h"
+#include "user.h"
 #include <stdlib.h>
 
 int main()
