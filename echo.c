@@ -14,6 +14,7 @@
 
 #include "img/CelesteClassic3_processed.h"
 
+
 int
 main(int argc, char *argv[])
 {
@@ -28,17 +29,27 @@ main(int argc, char *argv[])
   //kbd(keycode);
 
   int T = 0;
-  int i = 0;
+  int tmp = 0;
+  int tmp_t = 0;
+  // int flag = 0;
   while (1) {
-    T++;
     // if (T % 30 == 0) printf(1, "frame: %d\n", T);
     // TODO: Replace with vertical retrace
-    printf(1, "%d\n", vretrace());
-    if(vretrace()){
-        i++;
+    // printf(1, "1: %d\n", apictimer());
+    // printf(1, "2: %d\n", apictimer());
+    // int i = apictimer();
+    int cur = apictimer();
+    if(cur < tmp){
+      printf(1, "0: %d %d\n", cur, tmp);
+      tmp = 0;
     }
-    if(i >= 350){
+    // if(tmp == 0)
+    //   printf(1, "what: %d %d\n", j, tmp);
+    if(cur - tmp > 8000 && uptime() != tmp_t){
+      // printf(1, "%d\n", T);
       // printf(1, "5s: %d\n", i);
+      printf(1, "j: %d %d\n", cur, tmp);
+      T++;
       int x, y;
       for (y = 0; y < 200; y++)
         for (x = 0; x < 200; x++) {
@@ -51,9 +62,10 @@ main(int argc, char *argv[])
           img[(y1 * SCREEN_WIDTH + x1) * 3 + 2] = palette[index][2];
         }
       imgdraw(img);
-      i = 0;
+      // sleep(20);
+      tmp = cur;
     }
-    // sleep(10);
+    tmp_t = uptime();
   }
   free(img);
   exit();
