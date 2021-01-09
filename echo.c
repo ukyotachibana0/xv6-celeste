@@ -55,16 +55,17 @@ main(int argc, char *argv[])
     }
     // sleep(10);
 
-    // if(trsound()){
-    //   short* s_buf = (short*)malloc(2048);
-    //   memset(s_buf, 0, 2048);
-    //   static int phase = 0;
-    //   for(int i = 0; i < 2048; i++){
-    //     s_buf[i] = (phase >= 25 ? 50 - phase : phase) * 120;
-    //     phase = (phase + 1) % 50;
-    //   }
-    //   setsound(s_buf);
-    // }
+    if(trsound()){
+      short* s_buf = (short*)malloc(2048);
+      memset(s_buf, 0, 2048);
+      static int phase = 0;
+      for(int i = 0; i < 1024; i++){
+        s_buf[i] = (phase >= 25 ? 50 - phase : phase) * 120;
+        phase = (phase + 1) % 50;
+      }
+      setsound(s_buf);
+      free(s_buf);
+    }
   }
   free(img);
   exit();
