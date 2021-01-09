@@ -125,12 +125,101 @@ panic(char *s)
 
 //PAGEBREAK: 50
 #define BACKSPACE 0x100
+/*
 #define CRTPORT 0x3d4
 static ushort *crt = (ushort*)P2V(0xb8000);  // CGA memory
+*/
+#define pix(x, y) (*(uchar *)P2V(0xa0000 + (y) * 320 + (x)))
+
+// Character size: 7*14
+#define CHAR_W    7
+#define CHAR_H    14
+#include "font.h"
+// Character count: 45*14
+#define CHAR_ROWS 14
+#define CHAR_COLS 45
+static char cbuf[CHAR_ROWS][CHAR_COLS] = {{ 0 }};
+static unsigned cursrow = 0, curscol = 0;
+// Total drawing area: 315*196
+// Border: left 2, right 3, top 2, bottom 2
+#define PADDING_L 2
+#define PADDING_R 3
+#define PADDING_U 2
+#define PADDING_D 2
 
 static void
 cgaputc(int c)
 {
+  if (c == '\n') {
+    cursrow++;
+    curscol = 0;
+    c = 0;
+  } else if (c == BACKSPACE) {
+    if (curscol != 0) curscol--;
+    else if (cursrow != 0) {
+      cursrow--;
+      curscol = CHAR_COLS - 1;
+    }
+    cbuf[cursrow][curscol] = 0;
+    c = 0;
+  } else {
+    cbuf[cursrow][curscol] = c;
+    if (++curscol == CHAR_COLS) {
+      cursrow++;
+      curscol = 0;
+    }
+  }
+  if (cursrow == CHAR_ROWS) {
+    memmove(&cbuf[0][0], &cbuf[1][0], (CHAR_ROWS - 1) * CHAR_COLS);
+    memset(&cbuf[CHAR_ROWS - 1][0], 0, CHAR_COLS);
+    cursrow--;
+  }
+
+/*
+  for (int r = 0; r < CHAR_ROWS; r++)
+    for (int c = 0; c < CHAR_COLS; c++) {
+      if (c == 0) uartputc('|');
+      uartputc(cbuf[r][c] ? cbuf[r][c] : ' ');
+      if (c == CHAR_COLS - 1) uartputc('|'), uartputc('\n');
+    }
+  for (int i = 0; i < 10; i++) uartputc('-');
+  uartputc('\n');
+*/
+
+  // Set palette
+  outb(0x3c8, 0);
+  outb(0x3c9, 4); outb(0x3c9, 4); outb(0x3c9, 4);
+  outb(0x3c8, 1);
+  outb(0x3c9, 61); outb(0x3c9, 61); outb(0x3c9, 61);
+  outb(0x3c8, 2);
+  outb(0x3c9, 32); outb(0x3c9, 32); outb(0x3c9, 32);
+  // Output image
+  for (int r = 0; r < CHAR_ROWS; r++)
+    for (int c = 0; c < CHAR_COLS; c++) {
+      ushort x = PADDING_L + c * CHAR_W;
+      ushort y = PADDING_U + r * CHAR_H;
+      char ch = cbuf[r][c];
+      unsigned iscontrol = 0;
+      if (ch == 0) {
+        ch = ' ';
+      } else if (ch < 32) {
+        iscontrol = 1;
+        ch = ch + 'A' - 1;
+      }
+      uchar row = (ch - 32) / 16;
+      uchar col = (ch - 32) % 16;
+      ushort ptr = row * CHAR_W * 16 * CHAR_H + col * CHAR_W;
+      for (int j = 0; j < CHAR_H; j++)
+      for (int i = 0; i < CHAR_W; i++)
+        if (font_data[ptr + (j * CHAR_W * 16 + i)])
+          pix(x + i, y + j) = (iscontrol ? 2 : 1);
+        else if (r == cursrow && c == curscol)
+          pix(x + i, y + j) = 2;
+        else
+          pix(x + i, y + j) = 0;
+    }
+
+/*
   int pos;
 
   // Cursor position: col + 80*row.
@@ -160,6 +249,7 @@ cgaputc(int c)
   outb(CRTPORT, 15);
   outb(CRTPORT+1, pos);
   crt[pos] = ' ' | 0x0700;
+*/
 }
 
 void
