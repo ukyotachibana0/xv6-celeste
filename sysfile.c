@@ -464,6 +464,7 @@ int sys_imgdraw(void){
       unsigned char r = img[i*320*3 + j*3] >> 2;
       unsigned char g = img[i*320*3 + j*3 + 1] >> 2;
       unsigned char b = img[i*320*3 + j*3 + 2] >> 2;
+
       int k = 0;
       for(k = 0; k < palette_code; k++){
         if(palette[k] == (int)r * 256 * 256 + (int)g * 256 + (int)b){
@@ -491,30 +492,25 @@ int sys_imgdraw(void){
   return 1;
 }
 
-<<<<<<< HEAD
-int sys_apictimer(void){
-  // outb(0x43, 0x0b);
-  // unsigned char low = inb(0x40);
-  // unsigned char high = inb(0x40);
-  // // if(is_apictimer & 0x08){
-  // //   return 1;
-  // // }
-  // // else return 0;
-  // return ( (unsigned int)high << 8 ) + low;
-  int ticr = lapic[TICR];
-  int tccr = lapic[TCCR];
-  // cprintf("t: %d %d %d\n", ticks, ticr, tccr);
-  int r = (ticr * (ticks + 1) - tccr) / 10000; 
-  return r;
-=======
-int sys_vretrace(void){
-  unsigned char is_vRetrace = inb(0x3ba);
-  // if(is_vRetrace & 0x08){
+int sys_pitimer(void){
+  outb(0x43, 0x0b);
+  unsigned char low = inb(0x40);
+  unsigned char high = inb(0x40);
+  // if(is_apictimer & 0x08){
   //   return 1;
   // }
   // else return 0;
-  return is_vRetrace;
+  return ( (unsigned int)high << 8 ) + low;
 }
+
+int sys_apictimer(void){
+  int ticr = lapic[TICR];
+  int tccr = lapic[TCCR];
+  // cprintf("t: %d %d %d\n", ticks, ticr, tccr);
+  int r = (ticr * (ticks + 1) - tccr) / 10; 
+  return r;
+}
+
 
 int kb_mode[256] = { 0 };
 
@@ -526,5 +522,4 @@ int sys_kbd(void)
   if(index < 0 || index > 255)    //param out of range
     return -1;
   return kb_mode[index];
->>>>>>> 1781a546a9cd864b368df809e6905e155f69337b
 }

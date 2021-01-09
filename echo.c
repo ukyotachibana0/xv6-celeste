@@ -2,6 +2,7 @@
 #include "stat.h"
 #include "user.h"
 
+#define DELTA 2700630
 // int
 // main(int argc, char *argv[])
 // {
@@ -31,24 +32,34 @@ main(int argc, char *argv[])
   int T = 0;
   int tmp = 0;
   int tmp_t = 0;
+  // int tmp_pit = 0;
+  int c = 0;
   // int flag = 0;
   while (1) {
+    c++;
     // if (T % 30 == 0) printf(1, "frame: %d\n", T);
     // TODO: Replace with vertical retrace
     // printf(1, "1: %d\n", apictimer());
     // printf(1, "2: %d\n", apictimer());
     // int i = apictimer();
     int cur = apictimer();
-    if(cur < tmp){
-      printf(1, "0: %d %d\n", cur, tmp);
+    // int pit = pitimer();
+    // if(pit > tmp_pit){
+    //    printf(1, "0: %d\n", c);
+    // }
+    // tmp_pit = pit;
+    int t = uptime();
+    if(tmp - cur > DELTA){
+      // printf(1, "0: %d %d\n", cur, tmp);
       tmp = 0;
     }
     // if(tmp == 0)
     //   printf(1, "what: %d %d\n", j, tmp);
-    if(cur - tmp > 8000 && uptime() != tmp_t){
+    if(cur - tmp > DELTA && t != tmp_t){
       // printf(1, "%d\n", T);
       // printf(1, "5s: %d\n", i);
-      printf(1, "j: %d %d\n", cur, tmp);
+      // printf(1, "j: %d %d\n", cur, tmp);
+      //  printf(1, "1: %d\n", c);
       T++;
       int x, y;
       for (y = 0; y < 200; y++)
@@ -65,7 +76,20 @@ main(int argc, char *argv[])
       // sleep(20);
       tmp = cur;
     }
-    tmp_t = uptime();
+    // sleep(10);
+    if(trsound()){
+      printf(1, "0: %d\n", c);
+      short* s_buf = (short*)malloc(2048);
+      memset(s_buf, 0, 2048);
+      static int phase = 0;
+      for(int i = 0; i < 1024; i++){
+        s_buf[i] = (phase >= 25 ? 50 - phase : phase) * 120;
+        phase = (phase + 1) % 50;
+      }
+      setsound(s_buf);
+      free(s_buf);
+    }
+    tmp_t = t;
   }
   free(img);
   exit();

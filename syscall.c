@@ -104,12 +104,11 @@ extern int sys_wait(void);
 extern int sys_write(void);
 extern int sys_uptime(void);
 extern int sys_imgdraw(void);
-<<<<<<< HEAD
 extern int sys_apictimer(void);
-=======
-extern int sys_vretrace(void);
+extern int sys_pitimer(void);
 extern int sys_kbd(void);
->>>>>>> 1781a546a9cd864b368df809e6905e155f69337b
+extern int sys_setsound(void);
+extern int sys_trsound(void);
 
 static int (*syscalls[])(void) = {
 [SYS_fork]    sys_fork,
@@ -134,12 +133,11 @@ static int (*syscalls[])(void) = {
 [SYS_mkdir]   sys_mkdir,
 [SYS_close]   sys_close,
 [SYS_imgdraw]   sys_imgdraw,
-<<<<<<< HEAD
 [SYS_apictimer]  sys_apictimer,
-=======
-[SYS_vretrace]  sys_vretrace,
-[SYS_kbd]     sys_kbd
->>>>>>> 1781a546a9cd864b368df809e6905e155f69337b
+[SYS_pitimer]  sys_pitimer,
+[SYS_kbd]     sys_kbd,
+[SYS_setsound]  sys_setsound,
+[SYS_trsound]   sys_trsound,
 };
 
 void
