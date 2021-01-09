@@ -4,7 +4,7 @@
   - [ ] 系统调用 kbd (23)
 2. 显示
   - [*] 绘图 imgdraw (22)
-  - [x] 显示器垂直同步 vretrace (25)
+  - [x] 显示器垂直同步 apictimer (25)
   - [ ] 校准时钟
 3. 声音
   - [ ] 发送声音数据 sound (24)
@@ -78,7 +78,7 @@ OSDev Wiki：
 
 /****
 
-** 增加一个系统调用 vretrace 用于垂直同步 **
+** 增加一个系统调用 apictimer 用于垂直同步 **
 
 需要提供一个系统调用，以判别当前是否处于垂直回扫（vertical retrace）期。
 这样一来，用户程序等待此值的「上升沿」（从 0 变为 1），再调用一次 imgdraw 绘制，
@@ -93,7 +93,7 @@ OSDev Wiki：
     https://www.gamedev.net/forums/topic/283658-x86-detect-vga-vertical-retrace/
 
 测试：
-  echo 程序目前在两帧之间会 sleep 一小段时间，将其改成循环反复调用 vretrace，
+  echo 程序目前在两帧之间会 sleep 一小段时间，将其改成循环反复调用 apictimer，
   等待「上升沿」即可。
   echo 还会在控制台每隔 30 帧输出一行调试信息，观察输出间隔可判断是否实现正确。
   显示器刷新频率是 70 Hz。

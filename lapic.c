@@ -95,6 +95,9 @@ lapicinit(void)
 
   // Enable interrupts on the APIC (but not on the processor).
   lapicw(TPR, 0);
+  for(int i = 0; i < 10; i++){
+  cprintf("%d\n", lapic[TCCR]);
+  }
 }
 
 int

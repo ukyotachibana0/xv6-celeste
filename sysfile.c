@@ -18,6 +18,11 @@
 #include "x86.h"
 #include "memlayout.h"
 
+#define TCCR    (0x0390/4)   // Timer Current Count
+#define TICR    (0x0380/4)   // Timer Initial Count
+
+extern uint ticks;
+
 // Fetch the nth word-sized system call argument as a file descriptor
 // and return both the descriptor and the corresponding struct file.
 static int
@@ -486,13 +491,18 @@ int sys_imgdraw(void){
   return 1;
 }
 
-int sys_vretrace(void){
-  outb(0x43, 0x0b);
-  unsigned char low = inb(0x40);
-  unsigned char high = inb(0x40);
-  // if(is_vRetrace & 0x08){
-  //   return 1;
-  // }
-  // else return 0;
-  return ( (unsigned int)high << 8 ) + low;
+int sys_apictimer(void){
+  // outb(0x43, 0x0b);
+  // unsigned char low = inb(0x40);
+  // unsigned char high = inb(0x40);
+  // // if(is_apictimer & 0x08){
+  // //   return 1;
+  // // }
+  // // else return 0;
+  // return ( (unsigned int)high << 8 ) + low;
+  int ticr = lapic[TICR];
+  int tccr = lapic[TCCR];
+  // cprintf("t: %d %d %d\n", ticks, ticr, tccr);
+  int r = (ticr * (ticks + 1) - tccr) / 10000; 
+  return r;
 }
