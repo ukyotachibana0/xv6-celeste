@@ -1,16 +1,19 @@
 #include "game.h"
 
+#ifdef XV6
+#include "xv6-wrapper.h"
+#else
 #include <stddef.h>
-#include "celeste.h"
-
 #include <math.h>
 #include <stdarg.h>
 #include <stdbool.h>
-#include <stdio.h>
 #include <string.h>
+#endif
+
+#include "celeste.h"
 
 static uint8_t fb[128][128][4];
-static uint8_t out_fb[SCR_H][SCR_W][4];
+static uint8_t out_fb[SCR_H][SCR_W][3];
 static unsigned cur_buttons;
 
 void *game_draw()
@@ -19,7 +22,7 @@ void *game_draw()
   memset(out_fb, 0, sizeof out_fb);
   for (int y = 0; y < 128; y++)
     for (int x = 0; x < 128; x++)
-      for (int c = 0; c < 4; c++)
+      for (int c = 0; c < 3; c++)
         out_fb[(SCR_H - 128) / 2 + y]
               [(SCR_W - 128) / 2 + x]
               [c]
@@ -391,7 +394,7 @@ static int p8_call(CELESTE_P8_CALLBACK_TYPE calltype, ...)
       int flip_x = INT_ARG();
       int flip_y = INT_ARG();
       if (w != 1 || h != 1) {
-        puts("unsupported sprite scale");
+        // puts("unsupported sprite scale");
         break;
       }
       if (!flip_x && !flip_y)
@@ -407,7 +410,7 @@ static int p8_call(CELESTE_P8_CALLBACK_TYPE calltype, ...)
 
     case CELESTE_P8_SFX: {
       int id = INT_ARG();
-      printf("%d\n", id);
+      // printf("%d\n", id);
       // Find an appropriate channel
       do {
         last_sfx_ch = (last_sfx_ch + 1) % 4;
@@ -421,12 +424,15 @@ static int p8_call(CELESTE_P8_CALLBACK_TYPE calltype, ...)
     case CELESTE_P8_PAL: {
       int c0 = INT_ARG();
       int c1 = INT_ARG();
-      memcpy(pal[c0], pal_default[c1], sizeof pal[c0]);
+      // memcpy(pal[c0], pal_default[c1], sizeof pal[c0]);
+      for (int i = 0; i < 3; i++) pal[c0][i] = pal_default[c1][i];
       break;
     }
 
     case CELESTE_P8_PAL_RESET: {
-      memcpy(pal, pal_default, sizeof pal);
+      // memcpy(pal, pal_default, sizeof pal);
+      for (int c = 0; c < 16; c++)
+        for (int i = 0; i < 3; i++) pal[c][i] = pal_default[c][i];
       break;
     }
 
@@ -436,7 +442,7 @@ static int p8_call(CELESTE_P8_CALLBACK_TYPE calltype, ...)
       int r = INT_ARG();
       int col = INT_ARG();
       if (r > 3) {
-        puts("unsupported radius");
+        // puts("unsupported radius");
       }
       // TODO: Replace with pixel-by-pixel calculations
       if (r == 1) {
@@ -493,7 +499,7 @@ static int p8_call(CELESTE_P8_CALLBACK_TYPE calltype, ...)
       int y1 = INT_ARG() - camera_y;
       int col = INT_ARG();
       if (x0 != x1) {
-        puts("unsupported line");
+        // puts("unsupported line");
         break;
       }
       for (int y = y0; y <= y1; y++) pix(x0, y, col);
@@ -537,8 +543,8 @@ static int p8_call(CELESTE_P8_CALLBACK_TYPE calltype, ...)
       break;
     }
 
-    default:
-      printf("unhandled call %d\n", (int)calltype);
+    // default:
+    //   printf("unhandled call %d\n", (int)calltype);
   }
 
   va_end(args);

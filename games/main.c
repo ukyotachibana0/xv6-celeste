@@ -19,7 +19,7 @@ int main()
     .width = SCR_W,
     .height = SCR_H,
     .mipmaps = 1,
-    .format = UNCOMPRESSED_R8G8B8A8
+    .format = UNCOMPRESSED_R8G8B8
   });
   free(data);
 

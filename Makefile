@@ -76,6 +76,7 @@ AS = $(TOOLPREFIX)gas
 LD = $(TOOLPREFIX)ld
 OBJCOPY = $(TOOLPREFIX)objcopy
 OBJDUMP = $(TOOLPREFIX)objdump
+STRIP = $(TOOLPREFIX)strip
 CFLAGS = -fno-pic -static -fno-builtin -fno-strict-aliasing -O2 -Wall -MD -ggdb -m32 -Werror -fno-omit-frame-pointer
 CFLAGS += $(shell $(CC) -fno-stack-protector -E -x c /dev/null >/dev/null 2>&1 && echo -fno-stack-protector)
 CFLAGS += -std=gnu99
@@ -156,10 +157,16 @@ games/%.o: games/%.c
 
 games/xv6-tetris/%.o: games/xv6-tetris/%.c
 	$(CC) -c $^ -o $@ $(subst -Wall, , $(CFLAGS)) -DXV6 -I. -Igames -Os
-
 _tetris: games/xv6-main.o games/xv6-tetris/game.o games/xv6-tetris/tetris.o $(ULIB)
 	$(LD) $(LDFLAGS) -N -e main -Ttext 0 -o $@ $^
 	$(OBJDUMP) -S $@ > $@.asm
+
+games/celeste/%.o: games/celeste/%.c
+	$(CC) -c $^ -o $@ $(subst -Wall, , $(CFLAGS)) -DXV6 -I. -Igames -Os
+_celeste: games/xv6-main.o games/celeste/p8.o games/celeste/celeste.o $(ULIB)
+	$(LD) $(LDFLAGS) -N -e main -Ttext 0 -o $@ $^
+	$(OBJDUMP) -S $@ > $@.asm
+	$(STRIP) $@
 
 _forktest: forktest.o $(ULIB)
 	# forktest has less library code linked in - needs to be small
@@ -178,6 +185,7 @@ mkfs: mkfs.c fs.h
 
 UPROGS=\
 	_cat\
+	_celeste\
 	_echo\
 	_forktest\
 	_grep\

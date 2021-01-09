@@ -6,11 +6,17 @@
 * so _init becomes Celeste_P8_init && music becomes P8music, etc 
 */
 
+#ifdef XV6
+#define NO_BOOL
+#define NOOP_PRINTF
+#include "xv6-wrapper.h"
+#else
 #include <math.h>
 #include <string.h>
 #include <stdlib.h>
 #include <assert.h>
 #include <stdio.h>
+#endif
 
 #include "celeste.h"
 
@@ -129,6 +135,24 @@ static _fix32 _fix32_abs(_fix32 x) {
 #ifdef __cplusplus
 #define this xthis //this is a keyword in C++
 #endif
+
+static inline char *printstr(char *s, const char *t)
+{
+  while ((*s = *t)) { s++; t++; }
+  return s;
+}
+static inline char *printint(char *s, unsigned x, unsigned mindigits)
+{
+  int digits = 0, ox = x;
+  do { digits++; x /= 10; } while (x > 0);
+  if (digits < mindigits) digits = mindigits;
+  char *end = s + digits;
+  s = end;
+  x = ox;
+  do { *(--s) = x % 10 + '0'; x /= 10; } while (--digits);
+  *end = '\0';
+  return end;
+}
 
 //i cant be bothered to put all function declarations in an appropiate place so ill just toss them all here:
 static void PRELUDE(void);
@@ -1484,14 +1508,18 @@ static void FLAG_draw(OBJ* this) {
 		P8rectfill(32,2,96,31,0);
 		P8spr(26,55,6, 1,1,false,false);
 		{
-			char str[16];
-			snprintf(str, sizeof(str), "x%i", this->score);
+			char str[16], *s = str;
+			// snprintf(str, sizeof(str), "x%i", this->score);
+            s = printstr(s, "x");
+            s = printint(s, this->score, 0);
 			P8print(str,64,9,7);
 		}
 		draw_time(49,16);
 		{
-			char str[16];
-			snprintf(str, sizeof(str), "deaths:%i", deaths);
+			char str[16], *s = str;
+			// snprintf(str, sizeof(str), "deaths:%i", deaths);
+            s = printstr(s, "deaths:");
+            s = printint(s, deaths, 0);
 			P8print(str,48,24,7);
 		}
 	} else if (OBJ_check(this, OBJ_PLAYER,0,0)) {
@@ -1520,8 +1548,10 @@ static void ROOM_TITLE_draw(OBJ* this) {
 		} else {
 			int level=(1+level_index())*100;
 			{
-				char str[16];
-				snprintf(str, sizeof(str), "%i m", level);
+				char str[16], *s = str;
+				// snprintf(str, sizeof(str), "%i m", level);
+                s = printint(s, level, 0);
+                s = printstr(s, " m");
 				P8print(str,52+(level<1000 ? 2 : 0),62,7);
 			}
 		}
@@ -1930,8 +1960,13 @@ static void draw_time(float x, float y) {
    
 	P8rectfill(x,y,x+32,y+6,0);
 	{
-		char str[27];
-		snprintf(str, sizeof(str), "%.2i:%.2i:%.2i", h, m, s);
+		char str[27], *t = str;
+		// snprintf(str, sizeof(str), "%.2i:%.2i:%.2i", h, m, s);
+        t = printint(t, h, 2);
+        t = printstr(t, ":");
+        t = printint(t, m, 2);
+        t = printstr(t, ":");
+        t = printint(t, s, 2);
 		P8print(str,x+1,y+1,7);
 	}
 }
@@ -1999,6 +2034,7 @@ static bool spikes_at(float x,float y,int w,int h,float xspd,float yspd) {
 
 //////////END/////////
 
+/*
 void Celeste_P8__DEBUG(void) {
 	if (is_title()) start_game = true, start_game_flash=1;
 	else next_room();
@@ -2038,3 +2074,4 @@ void Celeste_P8_load_state(const void* st_) {
 }
 
 #undef LISTGVARS
+*/

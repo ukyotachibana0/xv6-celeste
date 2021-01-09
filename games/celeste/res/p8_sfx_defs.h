@@ -1,7 +1,11 @@
 #ifndef CELESTE_RAYLIB_P8_SFX_DEFS_H
 #define CELESTE_RAYLIB_P8_SFX_DEFS_H
 
+#ifdef XV6
+#include "xv6-wrapper.h"
+#else
 #include <stdint.h>
+#endif
 
 typedef struct {
   uint16_t pitch:6;
