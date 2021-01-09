@@ -30,4 +30,9 @@ SYSCALL(sbrk)
 SYSCALL(sleep)
 SYSCALL(uptime)
 SYSCALL(imgdraw)
+<<<<<<< HEAD
 SYSCALL(apictimer)
+=======
+SYSCALL(vretrace)
+SYSCALL(kbd)
+>>>>>>> 1781a546a9cd864b368df809e6905e155f69337b
