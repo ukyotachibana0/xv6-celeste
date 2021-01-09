@@ -51,16 +51,16 @@ static void overlay_draw();
 
 static inline void pix(uint16_t x, uint16_t y, uint8_t r, uint8_t g, uint8_t b)
 {
-    buf[y][x][2] = r;
+    buf[y][x][0] = r;
     buf[y][x][1] = g;
-    buf[y][x][0] = b;
+    buf[y][x][2] = b;
 }
 
 static inline void pix_alpha(uint16_t x, uint16_t y, uint8_t r, uint8_t g, uint8_t b, uint8_t a)
 {
-    buf[y][x][2] += (((int16_t)r - buf[y][x][2]) * a) >> 8;
+    buf[y][x][0] += (((int16_t)r - buf[y][x][0]) * a) >> 8;
     buf[y][x][1] += (((int16_t)g - buf[y][x][1]) * a) >> 8;
-    buf[y][x][0] += (((int16_t)b - buf[y][x][0]) * a) >> 8;
+    buf[y][x][2] += (((int16_t)b - buf[y][x][2]) * a) >> 8;
 }
 
 static inline void lineh(
@@ -445,16 +445,17 @@ void overlay_update()
 void overlay_draw()
 {
     uint8_t *_buf = &buf[0][0][0];
-    for (size_t i = 0; i < sizeof buf; i++) _buf[i] = ((uint16_t)_buf[i] * 3) >> 3;
+    for (size_t i = 0; i < sizeof buf; i++)
+        if (i % 4 != 3) _buf[i] = ((uint16_t)_buf[i] * 3) >> 3;
     //uint8_t *start = &buf[64][0][0], *end = &buf[112][0][0];
     //for (; start < end; start++) *start = ((uint16_t)*start * 3) >> 3;
 
     const char *msg = (screen == SCR_WIN ?
         (mode == MODE_SPRINT ? "Supercalifragilisticexpialidocious" : "It's been great work!") :
         (mode == MODE_MARATHON ? "It's been great work!" : "Oops! Try again"));
-    text_xcen(200, 88, msg);
-    text_str(155, 120, "[X] - Restart");
-    text_str(155, 136, "[O] - Back");
+    text_xcen(160, 72, msg);
+    text_str(115, 104, "[C] - Restart");
+    text_str(115, 120, "[X] - Back");
 }
 
 
@@ -471,7 +472,7 @@ void bg_draw()
     for (uint16_t y = 0; y < 200; y++)
     for (uint16_t x = 0; x < 320; x++)
     for (uint8_t ch = 0; ch < 3; ch++)
-        buf[y][x][ch] = bg[((x * 256 / 320) + ((y + 80) * 256 / 320) * 256) * 3 + ch];
+        buf[y][x][ch] = bg[((x * 256 / 320) + ((y + 80) * 256 / 320) * 256) * 3 + (2 - ch)];
 }
 
 void game_init()
@@ -480,7 +481,7 @@ void game_init()
     screen = SCR_MENU;
     for(int i = 0; i<200;i++){
         for(int j = 0; j < 320; j++){
-            buf[i][j][3] = 1;
+            buf[i][j][3] = 255;
         }
     }
 }
