@@ -29,18 +29,21 @@ static short *buf;
 static short user_buf[1024];
 static int is_tr = 0;
 
+extern unsigned isconsole;
+
 static void refill()
 {
   static unsigned buffer = 0;
-  for (int i = 0; i < 1024; i++) {
-    // buf[buffer + i] = (phase >= 25 ? 50 - phase : phase) * 120;
-    // phase = (phase + 1) % 50;
-    buf[buffer + i] = user_buf[i];
+  if (isconsole) {
+    memset(buf + buffer, 0, 2048);
+  } else {
+    for (int i = 0; i < 1024; i++)
+      buf[buffer + i] = user_buf[i];
+    is_tr = 1;
   }
   // for (int i = 0; i < 2048; i++) buf[i] = (++phase) % 12999;
   // buf[0] = 29999;
   buffer ^= 1024;
-  is_tr = 1;
 }
 
 //sound initialize

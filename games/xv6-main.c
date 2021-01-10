@@ -26,7 +26,7 @@ int main()
         }
         // if(tmp == 0)
         //   printf(1, "what: %d %d\n", j, tmp);
-        if(cur - tmp > 2000 && uptime() != tmp_t){
+        if(cur - tmp > 5000 && uptime() != tmp_t){
             
             unsigned buttons = 0;
             if (kbd(0))     buttons |= BTN_L;
@@ -37,6 +37,7 @@ int main()
             if (kbd('x'))   buttons |= BTN_X;
             if (kbd('z'))   buttons |= BTN_Z;
             if (kbd(' '))   buttons |= BTN_SP;
+            if (kbd('q')) break;
             game_update(buttons);
 
             // printf(1, "%d\n", T);
@@ -57,4 +58,7 @@ int main()
 
         tmp_t = uptime();
     }
+
+    consmode(0);
+    exit();
 }
