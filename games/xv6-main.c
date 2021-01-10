@@ -7,6 +7,8 @@ int main()
     consmode(1);
     game_init();
 
+    short *sndbuf = (short *)malloc(2048);
+
     // int T = 0;
     int tmp = 0;
     int tmp_t = 0;
@@ -47,6 +49,12 @@ int main()
             // sleep(20);
             tmp = cur;
         }
+
+        if (trsound()) {
+            game_audio(1024, sndbuf);
+            setsound(sndbuf);
+        }
+
         tmp_t = uptime();
     }
 }

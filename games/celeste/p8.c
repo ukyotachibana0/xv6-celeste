@@ -166,7 +166,7 @@ static inline void play_pattern(int n, int fadems)
 // A3 (33) = 440 Hz
 static inline float freq(unsigned pitch)
 {
-  return 440.0f * powf(2.0f, (float)((int)pitch - 33) / 12.0f);
+  return 440.0f * pow2f((float)((int)pitch - 33) / 12.0f);
 }
 
 typedef float (*osc_t)(float);

@@ -46,7 +46,8 @@ static float fmodf(float x, float y) {
 #define M_PI    3.1415926535897932f
 #define M_2_PI  6.2831853071795865f
 #define M_PI_2  9.8696044010893586f
-#define M_E     2.718281828459045f
+#define M_E     2.7182818284590452f
+#define M_LN2   0.6931471805599453f
 #endif
 static float sinf(float x) {
   x = fmodf(x + M_PI, M_2_PI) - M_PI;
@@ -61,9 +62,9 @@ static float cosf(float x) { return sinf(x + M_PI/2); }
 
 static float expf(float x) {
   float base = M_E;
-  if (x < 0) { base = 1.0f/M_E; x = -x; }
   unsigned y = (unsigned)x;
-  x -= y;
+  if (x < 0) { base = 1.0f/M_E; y = -y; x += y; }
+  else x -= y;
   float ret = 1;
   while (y > 0) {
     if (y & 1) ret *= base;
@@ -75,7 +76,6 @@ static float expf(float x) {
   ret *= ((x+3)*(x+3) + 3) / ((x-3)*(x-3) + 3);
   return ret;
 }
-static float lnf(float x) { return 0; }  // TODO
-static float powf(float x, float y) { return expf(y * lnf(x)); }
+static float pow2f(float y) { return expf(y * M_LN2); }
 
 #endif
