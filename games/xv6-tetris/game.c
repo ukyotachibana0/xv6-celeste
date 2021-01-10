@@ -489,13 +489,15 @@ void game_init()
 
 void game_update(unsigned buttons)
 {
-    b1 = b0;
-    b0 = buttons;
-    switch (screen) {
-        case SCR_MENU: menu_update(); break;
-        case SCR_GAME: game_game_update(); break;
-        case SCR_WIN: case SCR_LOSE: overlay_update(); break;
-        default: break;
+    for (int i = 0; i < 2; i++) {
+        b1 = b0;
+        b0 = buttons;
+        switch (screen) {
+            case SCR_MENU: menu_update(); break;
+            case SCR_GAME: game_game_update(); break;
+            case SCR_WIN: case SCR_LOSE: overlay_update(); break;
+            default: break;
+        }
     }
 }
 

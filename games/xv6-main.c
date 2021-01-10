@@ -2,6 +2,8 @@
 #include "types.h"
 #include "user.h"
 
+#define DELTA 2700630
+
 int main()
 {
     consmode(1);
@@ -20,13 +22,14 @@ int main()
         // printf(1, "2: %d\n", apictimer());
         // int i = apictimer();
         int cur = apictimer();
-        if(cur < tmp){
-            // printf(1, "0: %d %d\n", cur, tmp);
-            tmp = 0;
+        int t = uptime();
+        if(tmp - cur > DELTA){
+          // printf(1, "0: %d %d\n", cur, tmp);
+          tmp = 0;
         }
         // if(tmp == 0)
         //   printf(1, "what: %d %d\n", j, tmp);
-        if(cur - tmp > 5000 && uptime() != tmp_t){
+        if(cur - tmp > DELTA && t != tmp_t){
             
             unsigned buttons = 0;
             if (kbd(0))     buttons |= BTN_L;
