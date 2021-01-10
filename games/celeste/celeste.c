@@ -1715,6 +1715,12 @@ static void load_room(int x, int y) {
 /////////////////////
 
 void Celeste_P8_update() {
+#ifdef XV6
+    static unsigned last_key = 0;
+    unsigned cur_key = kbd(' ');
+    if (!last_key && cur_key) next_room();
+    last_key = cur_key;
+#endif
 	frames=((frames+1)%30);
 	if (frames==0 && level_index()<30) {
 		seconds=((seconds+1)%60);
