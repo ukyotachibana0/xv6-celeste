@@ -34,7 +34,6 @@ main(void)
   sndinit();       // sound
   startothers();   // start other processors
   kinit2(P2V(4*1024*1024), P2V(PHYSTOP)); // must come after startothers()
-  cprintf("DMA status: %x\n", inb(0xd0));
   userinit();      // first user process
   mpmain();        // finish this processor's setup
 }

@@ -192,6 +192,7 @@ UPROGS=\
 	_ln\
 	_ls\
 	_mkdir\
+	_mmtest\
 	_rm\
 	_sh\
 	_stressfs\

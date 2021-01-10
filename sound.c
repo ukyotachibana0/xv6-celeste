@@ -59,15 +59,15 @@ void sndinit()
   // Configure DMA & IRQ
   sb16_mixer_out(0x80, (1 << 1));             // IRQ 5
   sb16_mixer_out(0x81, (1 << 1) | (1 << 5));  // DMA 1 (8-bit), 5 (16-bit)
-  cprintf("IRQ selection: 0x%x\n", sb16_mixer_in(0x80));
-  cprintf("DMA selection: 0x%x\n", sb16_mixer_in(0x81));
+  // cprintf("IRQ selection: 0x%x\n", sb16_mixer_in(0x80));
+  // cprintf("DMA selection: 0x%x\n", sb16_mixer_in(0x81));
 
 
 
   // Allocate buffer
   buf = (short *)kalloc(); // 4k
   unsigned paddr = (unsigned)V2P(buf);
-  cprintf("buffer: vaddr=%x paddr=%x\n", (unsigned)buf, paddr);
+  // cprintf("buffer: vaddr=%x paddr=%x\n", (unsigned)buf, paddr);
   memset(buf, 0, 4096);
 
   // Program DMA channel 5
@@ -80,7 +80,7 @@ void sndinit()
   outb(0xc6, 0xff);   
   outb(0xc6, 0x07); // 2048 words  2 byte - word
   outb(0xd4, 1);  //启用DMA 5
-  cprintf("DMA status: %x\n", inb(0xd0));
+  // cprintf("DMA status: %x\n", inb(0xd0));
 
   sb16_out(0x41);
   sb16_out(0x56);
@@ -90,7 +90,7 @@ void sndinit()
   sb16_out(0x10);
   sb16_out(0xff); // 1024 samples
   sb16_out(0x03);
-  cprintf("DMA status: %x\n", inb(0xd0));
+  // cprintf("DMA status: %x\n", inb(0xd0));
 }
 
 void sndintr()
