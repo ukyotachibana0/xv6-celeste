@@ -163,6 +163,9 @@ static inline void play_pattern(int n, int fadems)
   }
 }
 
+#ifndef XV6
+#define pow2f(x) powf(2.0f, (x))
+#endif
 // A3 (33) = 440 Hz
 static inline float freq(unsigned pitch)
 {

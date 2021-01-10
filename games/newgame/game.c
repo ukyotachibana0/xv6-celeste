@@ -1,7 +1,7 @@
 #include "game.h"
 #include <string.h>
 
-unsigned char img[200][320][4];
+unsigned char img[200][320][3];
 
 void game_init()
 {
