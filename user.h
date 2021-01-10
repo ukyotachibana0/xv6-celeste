@@ -28,7 +28,7 @@ int apictimer(void);
 int kbd(int);
 int setsound(short*);
 int trsound();
-int vretrace(void);
+int pitimer(void);
 int consmode(int);
 
 // ulib.c

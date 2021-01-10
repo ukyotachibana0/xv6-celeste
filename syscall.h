@@ -25,5 +25,5 @@
 #define SYS_kbd 24
 #define SYS_setsound 25
 #define SYS_trsound 26
-#define SYS_vretrace 27
+#define SYS_pitimer 27
 #define SYS_consmode 28
