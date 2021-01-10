@@ -222,10 +222,14 @@ cgaputc(int c)
         else
           pix(x + i, y + j) = 0;
     }
-  for (int y = 0; y < PADDING_U; y++)
-    for (int x = 0; x < 320; x++) pix(x, y) = 0;
-  for (int y = 0; y < 200; y++)
-    for (int x = 319 - PADDING_U; x < 320; x++) pix(x, y) = 0;
+  for (int x = 0; x < 320; x++) {
+    for (int y = 0; y < PADDING_U; y++) pix(x, y) = 0;
+    for (int y = 199 - PADDING_D; y < 200; y++) pix(x, y) = 0;
+  }
+  for (int y = 0; y < 200; y++) {
+    for (int x = 0; x < PADDING_L; x++) pix(x, y) = 0;
+    for (int x = 319 - PADDING_R; x < 320; x++) pix(x, y) = 0;
+  }
 
 /*
   int pos;
