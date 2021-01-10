@@ -19,6 +19,7 @@
 int
 main(int argc, char *argv[])
 {
+  consmode(1);
   //int keycode = 0x01;  // escape key pressed
 
   const int SCREEN_WIDTH = 320;
@@ -36,6 +37,7 @@ main(int argc, char *argv[])
   int c = 0;
   // int flag = 0;
   while (1) {
+    if (kbd('q')) break;
     c++;
     // if (T % 30 == 0) printf(1, "frame: %d\n", T);
     // TODO: Replace with vertical retrace
@@ -78,7 +80,7 @@ main(int argc, char *argv[])
     }
     // sleep(10);
     if(trsound()){
-      printf(1, "0: %d\n", c);
+      // printf(1, "0: %d\n", c);
       short* s_buf = (short*)malloc(2048);
       memset(s_buf, 0, 2048);
       static int phase = 0;
@@ -92,5 +94,6 @@ main(int argc, char *argv[])
     tmp_t = t;
   }
   free(img);
+  consmode(0);
   exit();
 }
