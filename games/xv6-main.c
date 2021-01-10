@@ -21,7 +21,7 @@ int main()
         // int i = apictimer();
         int cur = apictimer();
         if(cur < tmp){
-            printf(1, "0: %d %d\n", cur, tmp);
+            // printf(1, "0: %d %d\n", cur, tmp);
             tmp = 0;
         }
         // if(tmp == 0)
@@ -41,7 +41,7 @@ int main()
 
             // printf(1, "%d\n", T);
             // printf(1, "5s: %d\n", i);
-            printf(1, "j: %d %d\n", cur, tmp);
+            // printf(1, "j: %d %d\n", cur, tmp);
 
             void* img = game_draw();
             imgdraw(img);

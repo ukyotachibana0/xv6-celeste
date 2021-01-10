@@ -32,7 +32,7 @@ int main()
   int16_t *pcm = (int16_t *)malloc(AUDIO_BLOCK_SIZE * 2);
 
   while (!WindowShouldClose()) {
-    bool step = (!IsKeyDown(KEY_SPACE) || IsKeyPressed(KEY_ENTER));
+    bool step = (!IsKeyDown(KEY_LEFT_SHIFT) || IsKeyPressed(KEY_ENTER));
     BeginDrawing();
     ClearBackground(BLACK);
 

@@ -33,7 +33,7 @@ static float fminf(float a, float b) { return a < b ? a : b; }
 static float fmaxf(float a, float b) { return a > b ? a : b; }
 static float floorf(float x) {
   int i = (int)x;
-  return (x >= 0 ? (float)i : (i == x ? i : (i - 1)));
+  return (float)(x >= 0 ? i : (i == x ? i : (i - 1)));
 }
 static float roundf(float x) { return floorf(x + 0.5f); }
 static float fabsf(float x) { return x >= 0 ? x : -x; }

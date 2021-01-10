@@ -464,12 +464,6 @@ void overlay_draw()
 }
 
 
-void game_audio(unsigned samples, int16_t *pcm)
-{
-  memset(pcm, 0, samples * 2);
-}
-
-
 ////// MAIN //////
 
 static const uint8_t bg[3] = {4, 20, 36};
@@ -483,10 +477,14 @@ void bg_draw()
         buf[y][x][ch] = bg[ch];
 }
 
+void seq_read();  // synth.c
+
 void game_init()
 {
     b0 = b1 = 0;
     screen = SCR_MENU;
+
+    seq_read();
 }
 
 void game_update(unsigned buttons)

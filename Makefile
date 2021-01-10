@@ -156,7 +156,7 @@ _%: %.o $(ULIB)
 games/%.o: games/%.c
 	$(CC) -c $^ -o $@ $(subst -Wall, , $(CFLAGS)) -DXV6 -I. -Igames -O2
 
-_tetris: games/xv6-main.o games/xv6-tetris/game.o games/xv6-tetris/tetris.o $(ULIB)
+_tetris: games/xv6-main.o games/xv6-tetris/game.o games/xv6-tetris/tetris.o games/xv6-tetris/synth.o $(ULIB)
 	$(LD) $(LDFLAGS) -N -e main -Ttext 0 -o $@ $^
 	$(OBJDUMP) -S $@ > $@.asm
 	$(STRIP) $@
