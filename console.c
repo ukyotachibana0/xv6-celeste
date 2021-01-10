@@ -222,6 +222,10 @@ cgaputc(int c)
         else
           pix(x + i, y + j) = 0;
     }
+  for (int y = 0; y < PADDING_U; y++)
+    for (int x = 0; x < 320; x++) pix(x, y) = 0;
+  for (int y = 0; y < 200; y++)
+    for (int x = 319 - PADDING_U; x < 320; x++) pix(x, y) = 0;
 
 /*
   int pos;
