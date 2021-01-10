@@ -106,6 +106,9 @@ extern int sys_uptime(void);
 extern int sys_imgdraw(void);
 extern int sys_apictimer(void);
 extern int sys_kbd(void);
+extern int sys_setsound(void);
+extern int sys_trsound(void);
+extern int sys_vretrace(void);
 extern int sys_consmode(void);
 
 static int (*syscalls[])(void) = {
@@ -133,6 +136,9 @@ static int (*syscalls[])(void) = {
 [SYS_imgdraw]   sys_imgdraw,
 [SYS_apictimer]  sys_apictimer,
 [SYS_kbd]     sys_kbd,
+[SYS_setsound]  sys_setsound,
+[SYS_trsound]   sys_trsound,
+[SYS_vretrace]  sys_vretrace,
 [SYS_consmode] sys_consmode,
 };
 

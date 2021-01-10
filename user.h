@@ -26,6 +26,9 @@ int uptime(void);
 int imgdraw(unsigned char*);
 int apictimer(void);
 int kbd(int);
+int setsound(short*);
+int trsound();
+int vretrace(void);
 int consmode(int);
 
 // ulib.c
